@@ -7,13 +7,29 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.geometry.Translation2d;
+
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants.  This class should not be used for any other purpose.  All constants should be
- * declared globally (i.e. public static).  Do not put anything functional in this class.
+ * The Constants class provides a convenient place for teams to hold robot-wide
+ * numerical or boolean constants. This class should not be used for any other
+ * purpose. All constants should be declared globally (i.e. public static). Do
+ * not put anything functional in this class.
  *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
- * constants are needed, to reduce verbosity.
+ * <p>
+ * It is advised to statically import this class (or one of its inner classes)
+ * wherever the constants are needed, to reduce verbosity.
  */
-public final class Constants {
+public final class Constants { // ! KSI, please
+    public static final class DrivetrainConstants {
+        public static final double MAX_SPEED = 0;
+
+        public static final double moduleSeparation_x = 0;
+        public static final double moduleSeparation_y = 0;
+
+        public static final int[] frontLeftModule = { 0, 0 };
+        public static final int[] backLeftModule = { 0, 0 };
+        public static final int[] frontRightModule = { 0, 0 };
+        public static final int[] backRightMotionPort = { 0, 0 };
+
+    }
 }
