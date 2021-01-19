@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.common.SwerveModule;
 
 public class DrivetrainSubsystem extends SubsystemBase {
     // Locations for the swerve drive modules relative to the robot center. Could be
@@ -25,8 +26,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final Translation2d backRightLocation = new Translation2d(-DrivetrainConstants.moduleSeparation_y / 2,
             -DrivetrainConstants.moduleSeparation_x / 2);
 
-    
-    
+    private SwerveModule frontLeft; // TODO: Implement SwerveModule
+    private SwerveModule frontRight;
+    private SwerveModule backLeft;
+    private SwerveModule backRight;
+
     // Creating my kinematics object using the module locations
     private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(frontLeftLocation, frontRightLocation,
             backLeftLocation, backRightLocation);
@@ -45,6 +49,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
                                                                                                        // to max, not
                                                                                                        // strictly
                                                                                                        // necessary
-
+        // ! Send signals to motors/SwerveModules -- TBD
     }
 }
