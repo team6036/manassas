@@ -7,7 +7,7 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.geometry.Translation2d;
+import org.frcteam2910.common.control.PidConstants;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -20,27 +20,43 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
  * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants { // ! KSI, please
-    public static final class DrivetrainConstants {
-        public static final double MAX_SPEED = 0;
-        public static final double TRACKWIDTH = 0;
-        public static final double WHEELBASE = 0;
+    public static final class RobotConstants {
+        public static final int primaryJoystick = 0;
+    }
 
-        public static final double moduleSeparation_x = 0;
-        public static final double moduleSeparation_y = 0;
+    public static final class SwerveModuleConstants {
+        public static final double DEFAULT_ANGLE_REDUCTION = 0.0;
+        public static final double DEFAULT_DRIVE_REDUCTION = 6.86;
+        public static final double DEFAULT_WHEEL_DIAMETER = 0.0254;
+
+        public static final PidConstants DEFAULT_ONBOARD_NEO_ANGLE_CONSTANTS = new PidConstants(0.5, 0.0, 0.0001);
+        public static final PidConstants DEFAULT_ONBOARD_CIM_ANGLE_CONSTANTS = new PidConstants(0.5, 0.0, 0.0001);
+        public static final PidConstants DEFAULT_ONBOARD_MINI_CIM_ANGLE_CONSTANTS = new PidConstants(0.5, 0.0, 0.0001);
+        public static final PidConstants DEFAULT_CAN_SPARK_MAX_ANGLE_CONSTANTS = new PidConstants(1.5, 0.0, 0.5);
+        public static final PidConstants DEFAULT_FALCON_ANGLE_CONSTANTS = new PidConstants(0.1, 0.0, 0.5);
+    }
+
+    public static final class DrivetrainConstants {
+        public static final double TRACKWIDTH = 0.495230;
+        public static final double WHEELBASE = 0.546163;
 
         public static final int frontLeftAngleEncoder = 0;
+        public static final int frontLeftDriveEncoder = 0;
         public static final int frontLeftAngleMotor = 0;
         public static final int frontLeftDriveMotor = 0;
 
         public static final int frontRightAngleEncoder = 0;
+        public static final int frontRightDriveEncoder = 0;
         public static final int frontRightAngleMotor = 0;
         public static final int frontRightDriveMotor = 0;
 
         public static final int backLeftAngleEncoder = 0;
+        public static final int backLeftDriveEncoder = 0;
         public static final int backLeftAngleMotor = 0;
         public static final int backLeftDriveMotor = 0;
 
         public static final int backRightAngleEncoder = 0;
+        public static final int backRightDriveEncoder = 0;
         public static final int backRightAngleMotor = 0;
         public static final int backRightDriveMotor = 0;
     }

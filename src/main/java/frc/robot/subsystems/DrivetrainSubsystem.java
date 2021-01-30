@@ -27,21 +27,25 @@ public class DrivetrainSubsystem extends SubsystemBase {
         private final SwerveModule frontLeftModule = new Mk2SwerveModuleBuilder(
                         new Vector2(TRACKWIDTH / 2.0, WHEELBASE / 2.0))
                                         .angleEncoder(new CANCoder(DrivetrainConstants.frontLeftAngleEncoder))
+                                        .driveEncoder(new CANCoder(DrivetrainConstants.frontLeftDriveEncoder))
                                         .angleMotor(new TalonFX(DrivetrainConstants.frontLeftAngleMotor))
                                         .driveMotor(new TalonFX(DrivetrainConstants.frontLeftDriveMotor)).build();
         private final SwerveModule frontRightModule = new Mk2SwerveModuleBuilder(
                         new Vector2(TRACKWIDTH / 2.0, -WHEELBASE / 2.0))
                                         .angleEncoder(new CANCoder(DrivetrainConstants.frontRightAngleEncoder))
+                                        .driveEncoder(new CANCoder(DrivetrainConstants.frontRightDriveEncoder))
                                         .angleMotor(new TalonFX(DrivetrainConstants.frontRightAngleMotor))
                                         .driveMotor(new TalonFX(DrivetrainConstants.frontRightDriveMotor)).build();
         private final SwerveModule backLeftModule = new Mk2SwerveModuleBuilder(
                         new Vector2(-TRACKWIDTH / 2.0, WHEELBASE / 2.0))
                                         .angleEncoder(new CANCoder(DrivetrainConstants.backLeftAngleEncoder))
+                                        .driveEncoder(new CANCoder(DrivetrainConstants.backLeftAngleEncoder))
                                         .angleMotor(new TalonFX(DrivetrainConstants.backLeftAngleMotor))
                                         .driveMotor(new TalonFX(DrivetrainConstants.backLeftDriveMotor)).build();
         private final SwerveModule backRightModule = new Mk2SwerveModuleBuilder(
                         new Vector2(-TRACKWIDTH / 2.0, -WHEELBASE / 2.0))
                                         .angleEncoder(new CANCoder(DrivetrainConstants.backRightAngleEncoder))
+                                        .driveEncoder(new CANCoder(DrivetrainConstants.backRightAngleEncoder))
                                         .angleMotor(new TalonFX(DrivetrainConstants.backRightAngleMotor))
                                         .driveMotor(new TalonFX(DrivetrainConstants.backRightDriveMotor)).build();
 
