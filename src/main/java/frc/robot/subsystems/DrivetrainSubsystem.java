@@ -1,54 +1,115 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.AnalogGyro;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.sensors.CANCoder;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.geometry.Translation2d;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DrivetrainConstants;
-import frc.robot.common.SwerveModule;
+import frc.robot.common.Mk2SwerveModuleBuilder;
+import org.frcteam2910.common.drivers.Gyroscope;
+import org.frcteam2910.common.drivers.SwerveModule;
+import org.frcteam2910.common.math.Vector2;
+import org.frcteam2910.common.robot.drivers.NavX;
 
 public class DrivetrainSubsystem extends SubsystemBase {
-    // Locations for the swerve drive modules relative to the robot center. Could be
-    // moved to Constants. Params for Translation2D() are a bit odd -- 1st is offset
-    // towards front of robot despite being named x 2nd is offset towards left of
-    // robot. This is necessary for SwerveDrieKinematics()
+        private static final double TRACKWIDTH = DrivetrainConstants.TRACKWIDTH;
+        private static final double WHEELBASE = DrivetrainConstants.WHEELBASE;
 
-    private final Translation2d frontLeftLocation = new Translation2d(DrivetrainConstants.moduleSeparation_y / 2,
-            DrivetrainConstants.moduleSeparation_x / 2);
-    private final Translation2d frontRightLocation = new Translation2d(DrivetrainConstants.moduleSeparation_y / 2,
-            -DrivetrainConstants.moduleSeparation_x / 2);
-    private final Translation2d backLeftLocation = new Translation2d(-DrivetrainConstants.moduleSeparation_y / 2,
-            DrivetrainConstants.moduleSeparation_x / 2);
-    private final Translation2d backRightLocation = new Translation2d(-DrivetrainConstants.moduleSeparation_y / 2,
-            -DrivetrainConstants.moduleSeparation_x / 2);
+        private static DrivetrainSubsystem instance;
 
-    private SwerveModule frontLeft; // TODO: Implement SwerveModule
-    private SwerveModule frontRight;
-    private SwerveModule backLeft;
-    private SwerveModule backRight;
+        private final SwerveModule frontLeftModule = new Mk2SwerveModuleBuilder(
+                        new Vector2(TRACKWIDTH / 2.0, WHEELBASE / 2.0))
+                                        .angleEncoder(new CANCoder(DrivetrainConstants.frontLeftAngleEncoder))
+                                        .angleMotor(new TalonFX(DrivetrainConstants.frontLeftAngleMotor))
+                                        .driveMotor(new TalonFX(DrivetrainConstants.frontLeftDriveMotor)).build();
+        private final SwerveModule frontRightModule = new Mk2SwerveModuleBuilder(
+                        new Vector2(TRACKWIDTH / 2.0, -WHEELBASE / 2.0))
+                                        .angleEncoder(new CANCoder(DrivetrainConstants.frontRightAngleEncoder))
+                                        .angleMotor(new TalonFX(DrivetrainConstants.frontRightAngleMotor))
+                                        .driveMotor(new TalonFX(DrivetrainConstants.frontRightDriveMotor)).build();
+        private final SwerveModule backLeftModule = new Mk2SwerveModuleBuilder(
+                        new Vector2(-TRACKWIDTH / 2.0, WHEELBASE / 2.0))
+                                        .angleEncoder(new CANCoder(DrivetrainConstants.backLeftAngleEncoder))
+                                        .angleMotor(new TalonFX(DrivetrainConstants.backLeftAngleMotor))
+                                        .driveMotor(new TalonFX(DrivetrainConstants.backLeftDriveMotor)).build();
+        private final SwerveModule backRightModule = new Mk2SwerveModuleBuilder(
+                        new Vector2(-TRACKWIDTH / 2.0, -WHEELBASE / 2.0))
+                                        .angleEncoder(new CANCoder(DrivetrainConstants.backRightAngleEncoder))
+                                        .angleMotor(new TalonFX(DrivetrainConstants.backRightAngleMotor))
+                                        .driveMotor(new TalonFX(DrivetrainConstants.backRightDriveMotor)).build();
 
-    // Creating my kinematics object using the module locations
-    private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(frontLeftLocation, frontRightLocation,
-            backLeftLocation, backRightLocation);
+        private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+                        new Translation2d(TRACKWIDTH / 2.0, WHEELBASE / 2.0),
+                        new Translation2d(TRACKWIDTH / 2.0, -WHEELBASE / 2.0),
+                        new Translation2d(-TRACKWIDTH / 2.0, WHEELBASE / 2.0),
+                        new Translation2d(-TRACKWIDTH / 2.0, -WHEELBASE / 2.0));
 
-    private SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics,
-            ((AnalogGyro) new Object()).getRotation2d()); // ! Gyro must be finalized -- ask chis
+        private final Gyroscope gyroscope = new NavX(SPI.Port.kMXP);
 
-    DrivetrainSubsystem() {
+        public DrivetrainSubsystem() {
+                gyroscope.calibrate();
+                gyroscope.setInverted(true); // You might not need to invert the gyro
 
-    }
+                frontLeftModule.setName("Front Left");
+                frontRightModule.setName("Front Right");
+                backLeftModule.setName("Back Left");
+                backRightModule.setName("Back Right");
+        }
 
-    public void drive(double xSpeed, double ySpeed, double rot) {
-        SwerveModuleState[] swerveModuleStates = kinematics
-                .toSwerveModuleStates(new ChassisSpeeds(xSpeed, ySpeed, rot));
-        SwerveDriveKinematics.normalizeWheelSpeeds(swerveModuleStates, DrivetrainConstants.MAX_SPEED); // Fixes speeds
-                                                                                                       // to max, not
-                                                                                                       // strictly
-                                                                                                       // necessary
-        // ! Send signals to motors/SwerveModules -- TBD
-    }
+        public static DrivetrainSubsystem getInstance() {
+                if (instance == null) {
+                        instance = new DrivetrainSubsystem();
+                }
+
+                return instance;
+        }
+
+        @Override
+        public void periodic() {
+                frontLeftModule.updateSensors();
+                frontRightModule.updateSensors();
+                backLeftModule.updateSensors();
+                backRightModule.updateSensors();
+
+                SmartDashboard.putNumber("Front Left Module Angle", Math.toDegrees(frontLeftModule.getCurrentAngle()));
+                SmartDashboard.putNumber("Front Right Module Angle",
+                                Math.toDegrees(frontRightModule.getCurrentAngle()));
+                SmartDashboard.putNumber("Back Left Module Angle", Math.toDegrees(backLeftModule.getCurrentAngle()));
+                SmartDashboard.putNumber("Back Right Module Angle", Math.toDegrees(backRightModule.getCurrentAngle()));
+
+                SmartDashboard.putNumber("Gyroscope Angle", gyroscope.getAngle().toDegrees());
+
+                frontLeftModule.updateState(TimedRobot.kDefaultPeriod);
+                frontRightModule.updateState(TimedRobot.kDefaultPeriod);
+                backLeftModule.updateState(TimedRobot.kDefaultPeriod);
+                backRightModule.updateState(TimedRobot.kDefaultPeriod);
+        }
+
+        public void drive(Translation2d translation, double rotation, boolean fieldOriented) {
+                rotation *= 2.0 / Math.hypot(WHEELBASE, TRACKWIDTH);
+                ChassisSpeeds speeds;
+                if (fieldOriented) {
+                        speeds = ChassisSpeeds.fromFieldRelativeSpeeds(translation.getX(), translation.getY(), rotation,
+                                        Rotation2d.fromDegrees(gyroscope.getAngle().toDegrees()));
+                } else {
+                        speeds = new ChassisSpeeds(translation.getX(), translation.getY(), rotation);
+                }
+
+                SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
+                frontLeftModule.setTargetVelocity(states[0].speedMetersPerSecond, states[0].angle.getRadians());
+                frontRightModule.setTargetVelocity(states[1].speedMetersPerSecond, states[1].angle.getRadians());
+                backLeftModule.setTargetVelocity(states[2].speedMetersPerSecond, states[2].angle.getRadians());
+                backRightModule.setTargetVelocity(states[3].speedMetersPerSecond, states[3].angle.getRadians());
+        }
+
+        public void resetGyroscope() {
+                gyroscope.setAdjustmentAngle(gyroscope.getUnadjustedAngle());
+        }
 }

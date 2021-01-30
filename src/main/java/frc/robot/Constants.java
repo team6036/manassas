@@ -22,14 +22,26 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
 public final class Constants { // ! KSI, please
     public static final class DrivetrainConstants {
         public static final double MAX_SPEED = 0;
+        public static final double TRACKWIDTH = 0;
+        public static final double WHEELBASE = 0;
 
         public static final double moduleSeparation_x = 0;
         public static final double moduleSeparation_y = 0;
 
-        public static final int[] frontLeftModule = { 0, 0 };
-        public static final int[] backLeftModule = { 0, 0 };
-        public static final int[] frontRightModule = { 0, 0 };
-        public static final int[] backRightMotionPort = { 0, 0 };
+        public static final int frontLeftAngleEncoder = 0;
+        public static final int frontLeftAngleMotor = 0;
+        public static final int frontLeftDriveMotor = 0;
 
+        public static final int frontRightAngleEncoder = 0;
+        public static final int frontRightAngleMotor = 0;
+        public static final int frontRightDriveMotor = 0;
+
+        public static final int backLeftAngleEncoder = 0;
+        public static final int backLeftAngleMotor = 0;
+        public static final int backLeftDriveMotor = 0;
+
+        public static final int backRightAngleEncoder = 0;
+        public static final int backRightAngleMotor = 0;
+        public static final int backRightDriveMotor = 0;
     }
 }
