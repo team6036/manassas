@@ -21,6 +21,7 @@ public class Mk2SwerveModuleBuilder {
 
     private static final PidConstants DEFAULT_FALCON_ANGLE_CONSTANTS = new PidConstants(0.1, 0.0, 0.5);
     private static final double DEFAULT_WHEEL_DIAMETER = 0.0254;
+    private static final double DEFAULT_DRIVE_REDUCTION = 6.86;
 
     private final Vector2 modulePosition;
 
@@ -188,12 +189,27 @@ public class Mk2SwerveModuleBuilder {
     }
 
     public Mk2SwerveModuleBuilder driveMotor(TalonFX motor) {
+        return driveMotor(motor, 0, 0);
+    }
+
+    public Mk2SwerveModuleBuilder driveMotor(TalonFX motor, double wheelDiameter, double offset) {
         TalonFXConfiguration config = new TalonFXConfiguration();
         motor.configAllSettings(config);
         motor.setNeutralMode(NeutralMode.Brake);
 
         currentDrawSupplier = motor::getSupplyCurrent;
         driveOutputConsumer = output -> motor.set(TalonFXControlMode.PercentOutput, output);
+
+        if (distanceSupplier == null || velocitySupplier == null) {
+            targetAngleConsumer = targetAngle -> {
+                distanceSupplier = () -> (Math.PI * wheelDiameter
+                        * motor.getSensorCollection().getIntegratedSensorPosition())
+                        / (2048.0 * DEFAULT_DRIVE_REDUCTION);
+                velocitySupplier = () -> (10.0 * Math.PI * wheelDiameter
+                        * motor.getSensorCollection().getIntegratedSensorVelocity())
+                        / (2048.0 * DEFAULT_DRIVE_REDUCTION);
+            };
+        }
 
         return this;
     }
