@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.commands.SwerveCommand;
+import frc.robot.commands.TestCommand;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -59,6 +60,14 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     return null;
+  }
+
+  public SwerveCommand getSwerveCommand() {
+    return drivetrainCommand;
+  }
+
+  public TestCommand getTestCommand() {
+    return new TestCommand();
   }
 
   public static Joystick getPrimaryJoystick() {

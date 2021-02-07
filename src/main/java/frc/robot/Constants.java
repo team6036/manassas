@@ -40,24 +40,20 @@ public final class Constants { // ! KSI, please
         public static final double TRACKWIDTH = 0.495230;
         public static final double WHEELBASE = 0.546163;
 
-        public static final int frontLeftAngleEncoder = 0;
-        public static final int frontLeftDriveEncoder = 0;
-        public static final int frontLeftAngleMotor = 0;
-        public static final int frontLeftDriveMotor = 0;
+        public static final int frontLeftAngleEncoder = 11;
+        public static final int frontLeftAngleMotor = 5;
+        public static final int frontLeftDriveMotor = 6;
 
-        public static final int frontRightAngleEncoder = 0;
-        public static final int frontRightDriveEncoder = 0;
-        public static final int frontRightAngleMotor = 0;
-        public static final int frontRightDriveMotor = 0;
+        public static final int frontRightAngleEncoder = 10;
+        public static final int frontRightAngleMotor = 3;
+        public static final int frontRightDriveMotor = 4;
 
-        public static final int backLeftAngleEncoder = 0;
-        public static final int backLeftDriveEncoder = 0;
-        public static final int backLeftAngleMotor = 0;
-        public static final int backLeftDriveMotor = 0;
+        public static final int backLeftAngleEncoder = 12;
+        public static final int backLeftAngleMotor = 7;
+        public static final int backLeftDriveMotor = 8;
 
-        public static final int backRightAngleEncoder = 0;
-        public static final int backRightDriveEncoder = 0;
-        public static final int backRightAngleMotor = 0;
-        public static final int backRightDriveMotor = 0;
+        public static final int backRightAngleEncoder = 9;
+        public static final int backRightAngleMotor = 1;
+        public static final int backRightDriveMotor = 2;
     }
 }

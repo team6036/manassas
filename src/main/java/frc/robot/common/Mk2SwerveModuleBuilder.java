@@ -189,7 +189,7 @@ public class Mk2SwerveModuleBuilder {
     }
 
     public Mk2SwerveModuleBuilder driveMotor(TalonFX motor) {
-        return driveMotor(motor, 0, 0);
+        return driveMotor(motor, DEFAULT_WHEEL_DIAMETER, 0);
     }
 
     public Mk2SwerveModuleBuilder driveMotor(TalonFX motor, double wheelDiameter, double offset) {
