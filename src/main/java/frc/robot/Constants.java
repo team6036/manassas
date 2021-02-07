@@ -55,5 +55,12 @@ public final class Constants { // ! KSI, please
         public static final int backRightAngleEncoder = 9;
         public static final int backRightAngleMotor = 1;
         public static final int backRightDriveMotor = 2;
+
+        // Heading Offsets From Straight Forwards (0)
+
+        public static final double frontLeftOffset = 215.068;
+        public static final double frontRightOffset = 207.334;
+        public static final double backLeftOffset = 310.693;
+        public static final double backRightOffset = 236.953;
     }
 }

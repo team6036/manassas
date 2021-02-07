@@ -78,7 +78,7 @@ public class Mk2SwerveModuleBuilder {
     public Mk2SwerveModuleBuilder angleEncoder(CANCoder encoder, double offset) {
         angleEncoderSupplier = () -> {
             double angle = encoder.getAbsolutePosition() / 180.0 * Math.PI;
-            angle += offset;
+            angle -= offset;
             angle %= 2.0 * Math.PI;
             if (angle < 0.0) {
                 angle += 2.0 * Math.PI;
