@@ -230,8 +230,6 @@ public class Mk2SwerveModuleBuilder {
         } else if (targetAngleConsumer == null) {
             // Angle motor not configured
             throw new IllegalStateException("No angle motor has been configured! See angleMotor");
-        } else if (distanceSupplier == null) {
-            throw new IllegalStateException("No drive encoder has been configured! See driveEncoder");
         }
 
         return new SwerveModuleImpl();

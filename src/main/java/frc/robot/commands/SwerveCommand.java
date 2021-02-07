@@ -39,7 +39,7 @@ public class SwerveCommand extends CommandBase {
         // Square the strafe stick
         strafe = Math.copySign(Math.pow(strafe, 2.0), strafe);
 
-        double rotation = -RobotContainer.getPrimaryJoystick().getRawAxis(4);
+        double rotation = RobotContainer.getPrimaryJoystick().getRawAxis(1);// -RobotContainer.getPrimaryJoystick().getRawAxis(4);//removed for testing
         rotation = Utilities.deadband(rotation);
         // Square the rotation stick
         rotation = Math.copySign(Math.pow(rotation, 2.0), rotation);

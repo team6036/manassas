@@ -36,7 +36,12 @@ public class TestCommand extends CommandBase {
                         frontRightDrive.getSensorCollection().getIntegratedSensorVelocity(),
                         backLeftDrive.getSensorCollection().getIntegratedSensorVelocity(),
                         backRightDrive.getSensorCollection().getIntegratedSensorVelocity()));
-    }
+
+                        System.out.println("frontLeftEncoder: " + frontLeftEncoder.getAbsolutePosition());
+                        System.out.println("frontRightEncoder: " + frontRightEncoder.getAbsolutePosition());
+                        System.out.println("backLeftEncoder: " + backLeftEncoder.getAbsolutePosition());
+                        System.out.println("backRightEncoder: " + backRightEncoder.getAbsolutePosition());
+                    }
 
     private double[] integratedVelocityConversion(double... inputVelocities) {
         double[] outputVelocities = new double[inputVelocities.length];
