@@ -58,9 +58,10 @@ public final class Constants { // ! KSI, please
 
         // Heading Offsets From Straight Forwards (0)
 
-        public static final double frontLeftOffset = 215.068;
-        public static final double frontRightOffset = 207.334;
-        public static final double backLeftOffset = 310.693;
-        public static final double backRightOffset = 236.953;
+        public static final double frontLeftOffset = 216.123047;
+        public static final double frontRightOffset = 207.861328;
+        public static final double backLeftOffset = 309.638672;
+        public static final double backRightOffset = 227.021484;
+
     }
 }
