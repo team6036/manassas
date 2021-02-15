@@ -56,7 +56,7 @@ public class TestCommand extends CommandBase {
                 SmartDashboard.putNumber("backLeft", backLeft);
                 SmartDashboard.putNumber("backRight", backRight);
 
-                frontLeftAngle.set(ControlMode.PercentOutput, demand);
+                // frontLeftAngle.set(ControlMode.PercentOutput, demand);
 
                 
         }
