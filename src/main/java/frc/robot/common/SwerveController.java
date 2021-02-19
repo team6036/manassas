@@ -22,6 +22,13 @@ public class SwerveController {
         }
     }
 
+    //makes all wheels point forward
+    public void zero(){
+        for(Module module : modules){
+            module.move(new Pose2D(1, 0, 0), true, false);
+        }
+    }
+
     public static class Module{
 
         public WPI_TalonFX turnMotor, driveMotor;
@@ -83,7 +90,9 @@ public class SwerveController {
             currentDriveSpeed = getDriveSpeed();
 
 
-            targetAngle = targetSpeedVector.getAngle();
+            // targetAngle = targetSpeedVector.getAngle();
+            targetAngle = targetSpeedVector.getAngle() - placement.ang;
+
             targetDriveSpeed = targetSpeedVector.getMagnitude();
             
             
@@ -99,7 +108,9 @@ public class SwerveController {
                 }
             }
 
-            double targetTurnTick = radToTicks(targetAngle - placement.ang);
+            // double targetTurnTick = radToTicks(targetAngle - placement.ang);
+            double targetTurnTick = radToTicks(targetAngle); //try this maybe?
+
             double targetDriveTicksPer100Millis = speedToTicksPer100Millis(targetDriveSpeed);
 
             if(turn){
