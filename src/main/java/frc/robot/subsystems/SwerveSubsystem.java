@@ -27,7 +27,7 @@ public class SwerveSubsystem extends SubsystemBase {
                 new Module(5, 6, 11, new Pose2D(-offsetX, -offsetY, Util.normalizeAngle(2.508059 + Math.PI, Math.PI)),
                         "frontLeft"),
                 new Module(7, 8, 12, new Pose2D(+offsetX, -offsetY, Util.normalizeAngle(0.878971 + Math.PI, Math.PI)),
-                        "backLeft")).addGyro(new Gyroscope(SPI.Port.kMXP)); //! compartmentalize
+                        "backLeft")).addGyro(new Gyroscope(SPI.Port.kMXP)); // ! compartmentalize
     }
 
     @Override

@@ -50,7 +50,7 @@ public class RobotContainer {
         return null;
     }
 
-    public Command getTeleopCommand(){
+    public Command getTeleopCommand() {
         return m_swerveCommand;
     }
 }

@@ -4,8 +4,10 @@ import java.text.DecimalFormat;
 
 public class Util {
 
-  public static double applyFrictions(double force, double velocity, double STATIC_FRIC, double KINE_FRIC, double VISCOUS_FRIC, double FRIC_THRESHOLD) {
-    // if not moving and force is not enough to overcome static friction, net force is 0
+  public static double applyFrictions(double force, double velocity, double STATIC_FRIC, double KINE_FRIC,
+      double VISCOUS_FRIC, double FRIC_THRESHOLD) {
+    // if not moving and force is not enough to overcome static friction, net force
+    // is 0
     if (Math.abs(velocity) < FRIC_THRESHOLD && Math.abs(force) < STATIC_FRIC) {
       return 0;
     }
@@ -48,7 +50,7 @@ public class Util {
   }
 
   // modulo but it always returns a positive number, ideal for screen loopback
-  public static double posModulo(double input, double modulo) { 
+  public static double posModulo(double input, double modulo) {
     while (input >= modulo)
       input -= modulo;
     while (input < 0)
@@ -57,7 +59,7 @@ public class Util {
   }
 
   // modulo for screen loopback but assumes zero at the center of the screen
-  public static double centerModulo(double input, double max) { 
+  public static double centerModulo(double input, double max) {
     input += max;
     input = posModulo(input, 2 * max);
     input -= max;
@@ -159,6 +161,7 @@ public class Util {
     double P, I, D, power;
 
     Boolean initialized = false;
+
     public double loop(double currentValue, double target) {
       if (!initialized) {
         lastError = target;
@@ -172,10 +175,10 @@ public class Util {
 
       P = kP * error;
 
-      if(kI != 0 && Math.abs(I) < IworkingRange){
+      if (kI != 0 && Math.abs(I) < IworkingRange) {
         I += kI * error * dt;
         I = limit(I, ImaxValue);
-      }else{
+      } else {
         I = 0;
       }
 
@@ -185,30 +188,31 @@ public class Util {
       return power;
     }
 
-    public double getPower(){
+    public double getPower() {
       return power;
     }
 
-    public void setkP(double newkP){
+    public void setkP(double newkP) {
       kP = newkP;
     }
-    public void setkI(double newkI, double newWorkingRange, double newMaxValue){
+
+    public void setkI(double newkI, double newWorkingRange, double newMaxValue) {
       kI = newkI;
       IworkingRange = newWorkingRange;
       ImaxValue = newMaxValue;
     }
-    public void setkD(double newkD){
+
+    public void setkD(double newkD) {
       kD = newkD;
     }
 
-    public void copyConstants(PID other){
+    public void copyConstants(PID other) {
       this.kP = other.kP;
       this.kI = other.kD;
       this.IworkingRange = other.IworkingRange;
       this.ImaxValue = other.ImaxValue;
       this.kD = other.kD;
     }
-
 
   }
 
@@ -357,18 +361,18 @@ public class Util {
     }
   }
 
-  public static class LooptimeMonitor{
+  public static class LooptimeMonitor {
     public long startTime;
     public double codetime;
 
     public long lasttime;
     public double looptime;
 
-    public void start(){
+    public void start() {
       startTime = System.nanoTime();
     }
 
-    public void end(){
+    public void end() {
       codetime = (System.nanoTime() - startTime) * 1e-9;
 
       looptime = (System.nanoTime() - lasttime) * 1e-9;
@@ -377,20 +381,21 @@ public class Util {
   }
 
   /**
-     * forces angle between -range and range
-     */
-    public static double normalizeAngle(double angle, double range){
-      // reduce the angle  
-      angle =  angle % (2 * range); 
+   * forces angle between -range and range
+   */
+  public static double normalizeAngle(double angle, double range) {
+    // reduce the angle
+    angle = angle % (2 * range);
 
-      // force it to be the positive remainder, so that 0 <= angle < 360  
-      angle = (angle + (2 * range)) % (2 * range);  
+    // force it to be the positive remainder, so that 0 <= angle < 360
+    angle = (angle + (2 * range)) % (2 * range);
 
-      // force into the minimum absolute value residue class, so that -180 < angle <= 180  
-      if (angle > range) angle -= (2 * range); 
+    // force into the minimum absolute value residue class, so that -180 < angle <=
+    // 180
+    if (angle > range)
+      angle -= (2 * range);
 
-      return angle;
+    return angle;
   }
-
 
 }

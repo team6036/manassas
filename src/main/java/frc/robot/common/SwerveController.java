@@ -12,8 +12,8 @@ public class SwerveController {
     private final Module[] modules;
     private Pose2D velPose;
 
-    static final double DRIVE_RATIO = 6.86; //! compartmentalize
-    static final double WHEEL_RADIUS = Util.inchesToMeters(2); //! compartmentalize
+    static final double DRIVE_RATIO = 6.86; // ! compartmentalize
+    static final double WHEEL_RADIUS = Util.inchesToMeters(2); // ! compartmentalize
 
     public SwerveController(Module... modules) {
         this.modules = modules;
