@@ -6,11 +6,14 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.frcteam2910.common.drivers.Gyroscope;
 
 public class SwerveController {
 
+    public Gyroscope gyroscope;
+
     public Module[] modules;
+    public Pose2D velPose;
 
     static final double DRIVE_RATIO = 6.86;
     static final double WHEEL_RADIUS = Util.inchesToMeters(2);
@@ -19,20 +22,48 @@ public class SwerveController {
         this.modules = modules;
     }
 
-    public void nyoom(Pose2D robotSpeeds, boolean turn, boolean drive) {
+    public SwerveController addGyro(Gyroscope gyroscope) {
+        this.gyroscope = gyroscope;
+        return this;
+    }
+
+    /**
+     * Method takes robotSpeeds and sends signals to all modules and their
+     * respective motors. Use this to move.
+     * 
+     * @param robotSpeeds   Velocity vector for modules
+     * @param turn          Whether or not modules' turn motor is actuated
+     * @param drive         Wheter or not modules' drive motor is actuated
+     * @param fieldRelative Field relative drive (requires gyro)
+     */
+    public void nyoom(Pose2D robotSpeeds, boolean turn, boolean drive, boolean fieldRelative) {
+        velPose = robotSpeeds;
+        if (fieldRelative) {
+            if (gyroscope == null) {
+                throw new IllegalStateException("No Gyroscope configured for field relative drive");
+            } else {
+                robotSpeeds = robotSpeeds.rotateVec(-gyroscope.getAngle().toRadians()); //
+                // angle from gyro is fine, but
+                // is robotspeeds is
+                // not being rotated accordingly
+                // something is wrong with Pose2D.rotate()
+
+            }
+
+        }
         for (Module module : modules) {
             module.move(robotSpeeds, turn, drive);
         }
     }
 
-    //makes all wheels point forward
-    public void zero(){
-        for(Module module : modules){
+    // makes all wheels point forward
+    public void zero() {
+        for (Module module : modules) {
             module.move(new Pose2D(1, 0, 0), true, false);
         }
     }
 
-    public static class Module{
+    public static class Module {
 
         public String name;
         public WPI_TalonFX turnMotor, driveMotor;
@@ -41,7 +72,8 @@ public class SwerveController {
         public Pose2D placement;
 
         Vector2D targetSpeedVector;
-        double targetAngle, targetDriveSpeed;
+        public double targetAngle;
+        double targetDriveSpeed;
         boolean reversed;
 
         public double currentAngle, currentDriveSpeed;
@@ -122,13 +154,13 @@ public class SwerveController {
             }
 
             if (drive) {
+                //System.out.println(targetDriveTicksPer100Millis / 4400.0); // seems to clock out at 4400
                 driveMotor.set(ControlMode.Velocity, targetDriveTicksPer100Millis);
+                // driveMotor.set(ControlMode.PercentOutput, targetDriveTicksPer100Millis / 4400.0); // percent output
             } else {
                 driveMotor.set(ControlMode.PercentOutput, 0);
             }
 
-            log(name + " target", targetAngle);
-            log(name + " current", currentAngle);
         }
 
         private double getAngle() {
@@ -176,10 +208,6 @@ public class SwerveController {
 
         private double speedToTicksPer100Millis(double speed) {
             return speed / WHEEL_RADIUS / (2 * Math.PI) * DRIVE_RATIO * 2048 / 10.0;
-        }
-
-        private void log(String key, double value) {
-            SmartDashboard.putNumber(key, value);
         }
     }
 
