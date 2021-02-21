@@ -6,49 +6,105 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 public class SwerveController {
+    private Gyroscope gyroscope;
 
-    public Module[] modules;
+    private final Module[] modules;
+    private Pose2D velPose;
 
-    static final double DRIVE_RATIO = 6.86;
-    static final double WHEEL_RADIUS = Util.inchesToMeters(2);
+    static final double DRIVE_RATIO = 6.86; //! compartmentalize
+    static final double WHEEL_RADIUS = Util.inchesToMeters(2); //! compartmentalize
 
     public SwerveController(Module... modules) {
         this.modules = modules;
     }
 
-    public void nyoom(Pose2D robotSpeeds, boolean turn, boolean drive) {
+    public SwerveController addGyro(Gyroscope gyroscope) {
+        this.gyroscope = gyroscope;
+        return this;
+    }
+
+    /**
+     * Method takes robotSpeeds and sends signals to all modules and their
+     * respective motors. Use this to move.
+     * 
+     * @param robotSpeeds   Velocity vector for modules
+     * @param fieldRelative Field relative drive (requires gyro)
+     */
+    public void nyoom(Pose2D robotSpeeds, boolean fieldRelative) {
+        velPose = robotSpeeds;
+        if (fieldRelative) {
+            if (gyroscope == null) {
+                throw new IllegalStateException("No Gyroscope configured for field relative drive");
+            } else {
+                robotSpeeds = robotSpeeds.rotateVec(gyroscope.getAngle());
+            }
+
+        }
         for (Module module : modules) {
-            module.move(robotSpeeds, turn, drive);
+            module.move(robotSpeeds, true, true);
         }
     }
 
-    //makes all wheels point forward
-    public void zero(){
-        for(Module module : modules){
+    /**
+     * Zeroes all modules relative to chassis
+     */
+    public void zero() {
+        for (Module module : modules) {
             module.move(new Pose2D(1, 0, 0), true, false);
         }
     }
 
-    public static class Module{
+    public Module[] getModules() {
+        return modules;
+    }
 
-        public String name;
-        public WPI_TalonFX turnMotor, driveMotor;
-        public CANCoder cancoder;
+    /**
+     * last given robotSpeeds from SwerveController.nyooom()
+     * 
+     * @return Pose2D containing velocity vectors and angular velocity
+     */
+    public Pose2D getTarget() {
+        return velPose;
+    }
 
-        public Pose2D placement;
+    /**
+     * Chassis angle relative to gyro's boot position
+     * 
+     * @return angle in radians
+     */
+    public double getAngle() {
+        return gyroscope.getAngle();
+    }
 
-        Vector2D targetSpeedVector;
-        double targetAngle, targetDriveSpeed;
-        boolean reversed;
+    public static class Module {
 
-        public double currentAngle, currentDriveSpeed;
+        private final String name;
+        private final WPI_TalonFX turnMotor, driveMotor;
+        private final CANCoder cancoder;
+
+        private Pose2D placement;
+
+        private Vector2D targetSpeedVector;
+        private double targetAngle;
+        private double targetDriveSpeed;
+        private boolean reversed;
+
+        private double currentAngle, currentDriveSpeed;
 
         // stuff for odometry:
-        double lastAngle, lastDrivePos, currentDrivePos;
+        private double lastAngle, lastDrivePos, currentDrivePos;
 
+        /**
+         * Configures modules's motors, encoder, and position
+         * 
+         * @param turnMotorID  CANID for turn motor
+         * @param driveMotorID CANID for drive motor
+         * @param cancoderID   CANID for CANCODER
+         * @param pose2d       Pose2D containing {x offset of module, y offset of
+         *                     module, angle offset of CANCODER from 'front' or fobot}
+         * @param name         Name for logging purposes
+         */
         public Module(int turnMotorID, int driveMotorID, int cancoderID, Pose2D pose2d, String name) {
             this.name = name;
             turnMotor = new WPI_TalonFX(turnMotorID);
@@ -127,8 +183,6 @@ public class SwerveController {
                 driveMotor.set(ControlMode.PercentOutput, 0);
             }
 
-            log(name + " target", targetAngle);
-            log(name + " current", currentAngle);
         }
 
         private double getAngle() {
@@ -170,7 +224,7 @@ public class SwerveController {
             return closestAngle;
         }
 
-        double radToTicks(double rad) {
+        private double radToTicks(double rad) {
             return rad * 4096.0 / (2 * Math.PI);
         }
 
@@ -178,8 +232,20 @@ public class SwerveController {
             return speed / WHEEL_RADIUS / (2 * Math.PI) * DRIVE_RATIO * 2048 / 10.0;
         }
 
-        private void log(String key, double value) {
-            SmartDashboard.putNumber(key, value);
+        public double getCurrentAngle() {
+            return currentAngle;
+        }
+
+        public double getTargetAngle() {
+            return targetAngle;
+        }
+
+        public double getCurrentSpeed() {
+            return currentDriveSpeed;
+        }
+
+        public String getName() {
+            return name;
         }
     }
 
