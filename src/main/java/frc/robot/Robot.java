@@ -36,8 +36,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-        Pose2D robotSpeeds = new Pose2D(-stick.getY(), -stick.getX(), stick.getThrottle()).scalarMult(1);
-        swerve.nyoom(robotSpeeds, true, true, false);
+        Pose2D robotSpeeds = new Pose2D(-stick.getY(), -stick.getX(), 2 * stick.getThrottle()).scalarMult(2);
+        swerve.nyoom(robotSpeeds, true, true, true);
         log("throttle", stick.getThrottle());
         for (int i = 0; i < 4; i++) {
             log(swerve.modules[i].name + "velocity", swerve.modules[i].currentDriveSpeed);
