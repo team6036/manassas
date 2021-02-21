@@ -1,55 +1,102 @@
 package frc.robot;
 
-import org.frcteam2910.common.robot.drivers.NavX;
-
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.common.SwerveController.Module;
-import frc.robot.common.Pose2D;
-import frc.robot.common.SwerveController;
-import frc.robot.common.Util;
 
+/**
+ * The VM is configured to automatically run this class, and to call the
+ * functions corresponding to each mode, as described in the TimedRobot
+ * documentation. If you change the name of this class or the package after
+ * creating this project, you must also update the build.gradle file in the
+ * project.
+ */
 public class Robot extends TimedRobot {
-    SwerveController swerve;
-    Joystick stick;
+    private Command m_teleopCommand;
+    private RobotContainer m_robotContainer;
 
+    /**
+     * This function is run when the robot is first started up and should be used
+     * for any initialization code.
+     */
     @Override
     public void robotInit() {
-        double offsetX = Util.inchesToMeters(26 / 2);
-        double offsetY = Util.inchesToMeters(24 / 2);
-        swerve = new SwerveController(new Module(1, 2, 9,
-                new Pose2D(+offsetX, +offsetY, Util.normalizeAngle(0.632000 + Math.PI, Math.PI)), "backRight"),
-                new Module(3, 4, 10,
-                        new Pose2D(-offsetX, +offsetY, Util.normalizeAngle(2.727418 + Math.PI, Math.PI)),
-                        "frontRight"),
-                new Module(5, 6, 11,
-                        new Pose2D(-offsetX, -offsetY, Util.normalizeAngle(2.508059 + Math.PI, Math.PI)),
-                        "frontLeft"),
-                new Module(7, 8, 12,
-                        new Pose2D(+offsetX, -offsetY, Util.normalizeAngle(0.878971 + Math.PI, Math.PI)),
-                        "backLeft")).addGyro(new NavX(SPI.Port.kMXP));
-        stick = new Joystick(0);
+        // Instantiate our RobotContainer. This will perform all our button bindings,
+        // and put our
+        // autonomous chooser on the dashboard.
+        m_robotContainer = new RobotContainer();
+    }
+
+    /**
+     * This function is called every robot packet, no matter the mode. Use this for
+     * items like diagnostics that you want ran during disabled, autonomous,
+     * teleoperated and test.
+     *
+     * <p>
+     * This runs after the mode specific periodic functions, but before LiveWindow
+     * and SmartDashboard integrated updating.
+     */
+    @Override
+    public void robotPeriodic() {
+        // Runs the Scheduler. This is responsible for polling buttons, adding
+        // newly-scheduled
+        // commands, running already-scheduled commands, removing finished or
+        // interrupted commands,
+        // and running subsystem periodic() methods. This must be called from the
+        // robot's periodic
+        // block in order for anything in the Command-based framework to work.
+        CommandScheduler.getInstance().run();
+    }
+
+    /**
+     * This function is called once each time the robot enters Disabled mode.
+     */
+    @Override
+    public void disabledInit() {
     }
 
     @Override
+    public void disabledPeriodic() {
+    }
+
+    /**
+     * This autonomous runs the autonomous command selected by your
+     * {@link RobotContainer} class.
+     */
+    @Override
+    public void autonomousInit() {
+    }
+
+    /**
+     * This function is called periodically during autonomous.
+     */
+    @Override
+    public void autonomousPeriodic() {
+    }
+
+    @Override
+    public void teleopInit() {
+        m_teleopCommand = m_robotContainer.getTeleopCommand();
+        m_teleopCommand.schedule();
+    }
+
+    /**
+     * This function is called periodically during operator control.
+     */
+    @Override
     public void teleopPeriodic() {
-        Pose2D robotSpeeds = new Pose2D(-stick.getY(), -stick.getX(), 2 * stick.getThrottle()).scalarMult(2);
-        swerve.nyoom(robotSpeeds, true, true, true);
-        log("throttle", stick.getThrottle());
-        for (int i = 0; i < 4; i++) {
-            log(swerve.modules[i].name + "velocity", swerve.modules[i].currentDriveSpeed);
-            log(swerve.modules[i].name + " target", swerve.modules[i].targetAngle);
-            log(swerve.modules[i].name + " current", swerve.modules[i].currentAngle);
-        }
-        log("Chassis angle", swerve.gyroscope.getAngle().toDegrees());
-        log("Pose angle", swerve.velPose.ang);
     }
 
-    public void log(String key, double val) {
-        SmartDashboard.putNumber(key, val);
+    @Override
+    public void testInit() {
+        // Cancels all running commands at the start of test mode.
+        CommandScheduler.getInstance().cancelAll();
     }
 
+    /**
+     * This function is called periodically during test mode.
+     */
+    @Override
+    public void testPeriodic() {
+    }
 }
