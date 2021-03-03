@@ -43,7 +43,7 @@ public class Pose2D extends Vector2D {
         return new Pose2D(getVector2D().subtract(toSub.getVector2D()), ang - toSub.ang);
     }
 
-    public Pose2D scalarMult(double scalar){
+    public Pose2D scalarMult(double scalar) {
         return new Pose2D(getVector2D().scalarMult(scalar), ang);
     }
 
@@ -55,7 +55,7 @@ public class Pose2D extends Vector2D {
         return new Pose2D(getVector2D(), ang + radiansToRotate);
     }
 
-    public Pose2D rotateVec(double radiansToRotate){
+    public Pose2D rotateVec(double radiansToRotate) {
         return new Pose2D(getVector2D().rotate(radiansToRotate), ang);
     }
 

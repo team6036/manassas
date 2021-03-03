@@ -42,8 +42,8 @@ public class Vector2D {
         return this.x * toDot.x + this.y * toDot.y;
     }
 
-    //pseudo cross product, returns double representing length of 3d vector
-    public double pcross(Vector2D toCross){
+    // pseudo cross product, returns double representing length of 3d vector
+    public double pcross(Vector2D toCross) {
         return this.getMagnitude() * toCross.getMagnitude() * Math.sin(this.getAngle() - toCross.getAngle());
     }
 
@@ -65,7 +65,7 @@ public class Vector2D {
         return new Vector2D(this.x * cos - this.y * sin, this.x * sin + this.y * cos, Type.CARTESIAN);
     }
 
-    public Vector2D rotate90(){
+    public Vector2D rotate90() {
         return new Vector2D(-this.y, this.x, Type.CARTESIAN);
     }
 

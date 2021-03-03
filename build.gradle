@@ -75,8 +75,6 @@ dependencies {
     // Enable simulation gui support. Must check the box in vscode to enable support
     // upon debugging
     simulation wpi.deps.sim.gui(wpi.platforms.desktop, false)
-    
-    implementation "com.github.FRCTeam2910.Common:robot:6456e9c82e"
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')

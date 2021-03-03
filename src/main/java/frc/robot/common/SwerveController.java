@@ -7,9 +7,11 @@ import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 import frc.robot.common.OdometryLinear.WheelData;
+import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 
 public class SwerveController {
-
+    private Gyroscope gyroscope;
+    private Pose2D velPose = new Pose2D();
     public Module[] modules;
     OdometryLinear odo;
     static final double DRIVE_RATIO = 6.86;
@@ -24,10 +26,35 @@ public class SwerveController {
         this.modules = modules;
     }
 
-    public void nyoom(Pose2D robotSpeeds, boolean turn, boolean drive) {
+    public SwerveController addGyro(Gyroscope gyroscope) {
+        this.gyroscope = gyroscope;
+        return this;
+    }
+
+    /**
+     * Method takes robotSpeeds and sends signals to all modules and their
+     * respective motors. Use this to move.
+     * 
+     * @param robotSpeeds   Velocity vector for modules
+     * @param fieldRelative Field relative drive (requires gyro)
+     */
+    public void nyoom(Pose2D robotSpeeds, boolean fieldRelative) {
         ArrayList<WheelData> wheelSteps = new ArrayList<WheelData>();
+
+        velPose = robotSpeeds;
+        if (fieldRelative) {
+            if (gyroscope == null) {
+                throw new IllegalStateException("No Gyroscope configured for field relative drive");
+            } else {
+                if (robotSpeeds == null) {
+                    System.out.println("robotspeeds");
+                }
+                robotSpeeds = robotSpeeds.rotateVec(gyroscope.getAngle());
+            }
+
+        }
         for (Module module : modules) {
-            module.move(robotSpeeds, turn, drive);
+            module.move(robotSpeeds, true, true);
             double avgAngle = (module.currentAngle + module.lastAngle) / 2.0;
             double distStep = module.currentDrivePos - module.lastDrivePos;
             wheelSteps.add(new WheelData(avgAngle, distStep));
@@ -35,31 +62,76 @@ public class SwerveController {
         odo.update(wheelSteps);
     }
 
+    /**
+     * Zeroes all modules relative to chassis
+     */
+    public void zero() {
+        for (Module module : modules) {
+            module.move(new Pose2D(1, 0, 0), true, false);
+        }
+    }
+
+    public Module[] getModules() {
+        return modules;
+    }
+
+    /**
+     * last given robotSpeeds from SwerveController.nyooom()
+     * 
+     * @return Pose2D containing velocity vectors and angular velocity
+     */
+    public Pose2D getTarget() {
+        return velPose;
+    }
+
+    /**
+     * Chassis angle relative to gyro's boot position
+     * 
+     * @return angle in radians
+     */
+    public double getAngle() {
+        return gyroscope.getAngle();
+    }
+
     public static class Module {
 
-        public WPI_TalonFX turnMotor, driveMotor;
-        public CANCoder cancoder;
+        private final String name;
+        private final WPI_TalonFX turnMotor, driveMotor;
+        private final CANCoder cancoder;
 
-        public Pose2D placement;
+        private Pose2D placement;
 
-        Vector2D targetSpeedVector;
-        double targetAngle, targetDriveSpeed;
-        boolean reversed;
+        private Vector2D targetSpeedVector;
+        private double targetAngle;
+        private double targetDriveSpeed;
+        private boolean reversed;
 
-        public double currentAngle, currentDriveSpeed;
+        private double currentAngle, currentDriveSpeed;
 
         // stuff for odometry:
-        double lastAngle, lastDrivePos, currentDrivePos;
+        private double lastAngle, lastDrivePos, currentDrivePos;
 
-        public Module(int turnMotorID, int driveMotorID, int cancoderID, Pose2D pose2d) {
-
+        /**
+         * Configures modules's motors, encoder, and position
+         * 
+         * @param turnMotorID  CANID for turn motor
+         * @param driveMotorID CANID for drive motor
+         * @param cancoderID   CANID for CANCODER
+         * @param pose2d       Pose2D containing {x offset of module, y offset of
+         *                     module, angle offset of CANCODER from 'front' or fobot}
+         * @param name         Name for logging purposes
+         */
+        public Module(int turnMotorID, int driveMotorID, int cancoderID, Pose2D pose2d, String name) {
+            this.name = name;
             turnMotor = new WPI_TalonFX(turnMotorID);
             driveMotor = new WPI_TalonFX(driveMotorID);
             cancoder = new CANCoder(cancoderID);
             this.placement = pose2d;
 
+            driveMotor.configFactoryDefault();
             turnMotor.configFactoryDefault();
             cancoder.configFactoryDefault();
+            cancoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
 
             turnMotor.configRemoteFeedbackFilter(cancoder, 0);
             turnMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
@@ -112,6 +184,7 @@ public class SwerveController {
             }
 
             double targetTurnTick = radToTicks(targetAngle - placement.ang);
+
             double targetDriveTicksPer100Millis = speedToTicksPer100Millis(targetDriveSpeed);
 
             if (turn) {
@@ -125,6 +198,7 @@ public class SwerveController {
             } else {
                 driveMotor.set(ControlMode.PercentOutput, 0);
             }
+
         }
 
         private double getAngle() {
@@ -166,7 +240,7 @@ public class SwerveController {
             return closestAngle;
         }
 
-        double radToTicks(double rad) {
+        private double radToTicks(double rad) {
             return rad * 4096.0 / (2 * Math.PI);
         }
 
@@ -174,6 +248,21 @@ public class SwerveController {
             return speed / WHEEL_RADIUS / (2 * Math.PI) * DRIVE_RATIO * 2048 / 10.0;
         }
 
+        public double getCurrentAngle() {
+            return currentAngle;
+        }
+
+        public double getTargetAngle() {
+            return targetAngle;
+        }
+
+        public double getCurrentSpeed() {
+            return currentDriveSpeed;
+        }
+
+        public String getName() {
+            return name;
+        }
     }
 
 }
