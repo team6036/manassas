@@ -10,7 +10,8 @@ import frc.robot.common.Util;
 import frc.robot.common.SwerveController.Module;
 
 public class SwerveSubsystem extends SubsystemBase {
-    SwerveController swerve;
+    public SwerveController swerve;
+    boolean fieldRelative;
     Pose2D robotSpeed;
 
     /**
@@ -20,7 +21,7 @@ public class SwerveSubsystem extends SubsystemBase {
         robotSpeed = new Pose2D();
         double offsetX = Util.inchesToMeters(26 / 2); // ! compartmentalize
         double offsetY = Util.inchesToMeters(24 / 2); // ! compartmentalize
-        swerve = new SwerveController(
+        swerve = new SwerveController(new Gyroscope(SPI.Port.kMXP),
                 new Module(1, 2, 9, new Pose2D(+offsetX, +offsetY, Util.normalizeAngle(0.632000 + Math.PI, Math.PI)),
                         "backRight"),
                 new Module(3, 4, 10, new Pose2D(-offsetX, +offsetY, Util.normalizeAngle(2.727418 + Math.PI, Math.PI)),
@@ -28,12 +29,12 @@ public class SwerveSubsystem extends SubsystemBase {
                 new Module(5, 6, 11, new Pose2D(-offsetX, -offsetY, Util.normalizeAngle(2.508059 + Math.PI, Math.PI)),
                         "frontLeft"),
                 new Module(7, 8, 12, new Pose2D(+offsetX, -offsetY, Util.normalizeAngle(0.878971 + Math.PI, Math.PI)),
-                        "backLeft")).addGyro(new Gyroscope(SPI.Port.kMXP)); // ! compartmentalize
+                        "backLeft")); // ! compartmentalize
     }
 
     @Override
     public void periodic() {
-        swerve.nyoom(robotSpeed, true);
+        swerve.nyoom(robotSpeed, fieldRelative);
 
         for (int i = 0; i < 4; i++) {
             log(swerve.getModules()[i].getName() + "velocity", swerve.getModules()[i].getCurrentSpeed());
@@ -44,8 +45,9 @@ public class SwerveSubsystem extends SubsystemBase {
         log("Pose angle", swerve.getTarget().ang);
     }
 
-    public void drive(Pose2D robotSpeed) {
+    public void drive(Pose2D robotSpeed, boolean fieldRelative) {
         this.robotSpeed = robotSpeed;
+        this.fieldRelative = fieldRelative;
     }
 
     public void log(String key, double val) {

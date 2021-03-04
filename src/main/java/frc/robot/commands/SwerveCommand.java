@@ -5,6 +5,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /**
@@ -38,7 +39,8 @@ public class SwerveCommand extends CommandBase {
     @Override
     public void execute() {
         m_subsystem.drive(
-                new Pose2D(-stickY.getAsDouble(), -stickX.getAsDouble(), 2 * stickRot.getAsDouble()).scalarMult(2));
+                new Pose2D(-stickY.getAsDouble(), -stickX.getAsDouble(), 2 * stickRot.getAsDouble()).scalarMult(2),true);
+
     }
 
     // Called once the command ends or is interrupted.

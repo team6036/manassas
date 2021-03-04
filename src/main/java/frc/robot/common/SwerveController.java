@@ -13,22 +13,18 @@ public class SwerveController {
     private Gyroscope gyroscope;
     private Pose2D velPose = new Pose2D();
     public Module[] modules;
-    OdometryLinear odo;
+    public OdometryLinear odo;
     static final double DRIVE_RATIO = 6.86;
     static final double WHEEL_RADIUS = Util.inchesToMeters(2);
 
-    public SwerveController(Module... modules) {
+    public SwerveController(Gyroscope gyroscope, Module... modules) {
         Pose2D[] placements = new Pose2D[modules.length];
         for (int moduleIndex = 0; moduleIndex < modules.length; moduleIndex++) {
             placements[moduleIndex] = modules[moduleIndex].placement;
         }
-        odo = new OdometryLinear(placements);
-        this.modules = modules;
-    }
-
-    public SwerveController addGyro(Gyroscope gyroscope) {
         this.gyroscope = gyroscope;
-        return this;
+        odo = new OdometryLinear(gyroscope, placements);
+        this.modules = modules;
     }
 
     /**
@@ -46,9 +42,6 @@ public class SwerveController {
             if (gyroscope == null) {
                 throw new IllegalStateException("No Gyroscope configured for field relative drive");
             } else {
-                if (robotSpeeds == null) {
-                    System.out.println("robotspeeds");
-                }
                 robotSpeeds = robotSpeeds.rotateVec(gyroscope.getAngle());
             }
 
