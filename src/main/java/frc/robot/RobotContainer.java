@@ -3,6 +3,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.robot.commands.AutoCommand;
 import frc.robot.commands.SwerveCommand;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -17,13 +19,13 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-    public final static Joystick stick = new Joystick(0);
+    public final static XboxController controller = new XboxController(0);
     private final SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
 
-    private final SwerveCommand m_swerveCommand = new SwerveCommand(m_swerveSubsystem, () -> stick.getX(),
-            () -> stick.getY(), () -> stick.getThrottle());
+    private final SwerveCommand m_swerveCommand = new SwerveCommand(m_swerveSubsystem,
+            () -> controller.getX(Hand.kLeft), () -> controller.getY(Hand.kLeft), () -> controller.getX(Hand.kRight), () -> controller.getAButton(), () -> controller.getXButton());
 
-    private final AutoCommand m_autoCommand = new AutoCommand(m_swerveSubsystem);
+    private final AutoCommand m_autoCommand = new AutoCommand(() -> controller.getXButton(), () -> controller.getAButton(), m_swerveSubsystem);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -40,7 +42,6 @@ public class RobotContainer {
      * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        ;
     }
 
     /**

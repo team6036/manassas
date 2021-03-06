@@ -58,10 +58,14 @@ public class SwerveController {
     /**
      * Zeroes all modules relative to chassis
      */
-    public void zero() {
+    public void zeroWheels() {
         for (Module module : modules) {
             module.move(new Pose2D(1, 0, 0), true, false);
         }
+    }
+
+    public void recalibrateOdometry() {
+        odo.zero();
     }
 
     public Module[] getModules() {
@@ -129,9 +133,10 @@ public class SwerveController {
             turnMotor.configRemoteFeedbackFilter(cancoder, 0);
             turnMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
 
-            turnMotor.config_kF(0, 0, 0);
-            turnMotor.config_kP(0, 0.25, 0);
-            turnMotor.config_kI(0, 0.00025, 0);
+            turnMotor.config_kF(0, 0.002, 0);
+            turnMotor.config_kP(0, 0.50, 0);
+            turnMotor.config_kI(0, 0.0005, 0);
+            // turnMotor.config_kI(0, 0.0, 0);
             turnMotor.config_kD(0, 0, 0);
 
             driveMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
@@ -163,10 +168,11 @@ public class SwerveController {
             targetAngle = targetSpeedVector.getAngle();
             targetDriveSpeed = targetSpeedVector.getMagnitude();
 
-            if (Math.abs(targetDriveSpeed) < 0.1) { // was 0.5
+            if (Math.abs(targetDriveSpeed) < -0.1) { // was 0.5
                 targetAngle = closest180(currentAngle, targetAngle);
                 if (reversed)
                     targetDriveSpeed *= -1;
+                targetDriveSpeed = 0;
             } else {
                 if (reversed) {
                     targetAngle = closest360(currentAngle, targetAngle + Math.PI);

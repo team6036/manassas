@@ -10,9 +10,9 @@ import frc.robot.common.Util;
 import frc.robot.common.SwerveController.Module;
 
 public class SwerveSubsystem extends SubsystemBase {
-    public SwerveController swerve;
-    boolean fieldRelative;
-    Pose2D robotSpeed;
+    private SwerveController swerve;
+    private boolean fieldRelative;
+    private Pose2D robotSpeed;
 
     /**
      * Creates a new ExampleSubsystem.
@@ -22,7 +22,7 @@ public class SwerveSubsystem extends SubsystemBase {
         double offsetX = Util.inchesToMeters(26 / 2); // ! compartmentalize
         double offsetY = Util.inchesToMeters(24 / 2); // ! compartmentalize
         swerve = new SwerveController(new Gyroscope(SPI.Port.kMXP),
-                new Module(1, 2, 9, new Pose2D(+offsetX, +offsetY, Util.normalizeAngle(0.632000 + Math.PI, Math.PI)),
+                new Module(1, 2, 9, new Pose2D(+offsetX, +offsetY, Util.normalizeAngle(0.632000-0.47123889+2.819764, Math.PI)),
                         "backRight"),
                 new Module(3, 4, 10, new Pose2D(-offsetX, +offsetY, Util.normalizeAngle(2.727418 + Math.PI, Math.PI)),
                         "frontRight"),
@@ -37,12 +37,23 @@ public class SwerveSubsystem extends SubsystemBase {
         swerve.nyoom(robotSpeed, fieldRelative);
 
         for (int i = 0; i < 4; i++) {
-            log(swerve.getModules()[i].getName() + "velocity", swerve.getModules()[i].getCurrentSpeed());
-            log(swerve.getModules()[i].getName() + " target", swerve.getModules()[i].getTargetAngle());
-            log(swerve.getModules()[i].getName() + " current", swerve.getModules()[i].getCurrentAngle());
+            log(swerve.getModules()[i].getName() + " target", Util.normalizeAngle(swerve.getModules()[i].getTargetAngle(), Math.PI));
+            log(swerve.getModules()[i].getName() + " current", Util.normalizeAngle(swerve.getModules()[i].getCurrentAngle(), Math.PI));
         }
         log("Chassis angle", swerve.getAngle());
         log("Pose angle", swerve.getTarget().ang);
+    }
+
+    public SwerveController getController() {
+        return swerve;
+    }
+
+    public void recalibrateOdometry() {
+        swerve.recalibrateOdometry();
+    }
+
+    public void zeroWheels() {
+        swerve.zeroWheels();
     }
 
     public void drive(Pose2D robotSpeed, boolean fieldRelative) {
