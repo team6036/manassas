@@ -3,7 +3,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.AutoCommand;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -13,9 +12,9 @@ import frc.robot.commands.AutoCommand;
  * project.
  */
 public class Robot extends TimedRobot {
-    private Command m_teleopCommand;
-    private RobotContainer m_robotContainer;
-    private Command m_autoCommand;
+    private static Command m_teleopCommand;
+    private static RobotContainer m_robotContainer;
+    private static Command m_autoCommand;
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -69,9 +68,6 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         CommandScheduler.getInstance().cancelAll();
         m_autoCommand = m_robotContainer.getAutonomousCommand();
-
-        AutoCommand.timer.reset();
-        AutoCommand.timer.start();
         m_autoCommand.schedule();
     }
 

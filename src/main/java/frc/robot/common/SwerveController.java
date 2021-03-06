@@ -10,14 +10,21 @@ import frc.robot.common.OdometryLinear.WheelData;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 
 public class SwerveController {
-    private Gyroscope gyroscope;
+    private static double WHEEL_RADIUS, DRIVE_RATIO;
+    private final Gyroscope gyroscope;
+    public final OdometryLinear odo;
     private Pose2D velPose = new Pose2D();
     public Module[] modules;
-    public OdometryLinear odo;
-    static final double DRIVE_RATIO = 6.86;
-    static final double WHEEL_RADIUS = Util.inchesToMeters(2);
 
-    public SwerveController(Gyroscope gyroscope, Module... modules) {
+    /**
+     * @param driveRatio  Gear ratio for drive motors
+     * @param wheelRadius Radius of wheels in METERS
+     * @param gyroscope
+     * @param modules
+     */
+    public SwerveController(double driveRatio, double wheelRadius, Gyroscope gyroscope, Module... modules) {
+        WHEEL_RADIUS = wheelRadius;
+        DRIVE_RATIO = driveRatio;
         Pose2D[] placements = new Pose2D[modules.length];
         for (int moduleIndex = 0; moduleIndex < modules.length; moduleIndex++) {
             placements[moduleIndex] = modules[moduleIndex].placement;
@@ -119,6 +126,7 @@ public class SwerveController {
          * @param name         Name for logging purposes
          */
         public Module(int turnMotorID, int driveMotorID, int cancoderID, Pose2D pose2d, String name) {
+            // TODO Consider moving this to constants?
             this.name = name;
             turnMotor = new WPI_TalonFX(turnMotorID);
             driveMotor = new WPI_TalonFX(driveMotorID);
@@ -136,7 +144,6 @@ public class SwerveController {
             turnMotor.config_kF(0, 0.002, 0);
             turnMotor.config_kP(0, 0.50, 0);
             turnMotor.config_kI(0, 0.0005, 0);
-            // turnMotor.config_kI(0, 0.0, 0);
             turnMotor.config_kD(0, 0, 0);
 
             driveMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
@@ -151,6 +158,7 @@ public class SwerveController {
             Vector2D linVelo = robotSpeeds.getVector2D();
             double angVelo = robotSpeeds.ang;
 
+            //TODO standardize deadbands, move to const.
             if (linVelo.getMagnitude() < 0.1 && Math.abs(angVelo) < 0.1) {
                 linVelo = new Vector2D();
                 angVelo = 0;

@@ -5,7 +5,8 @@ import java.text.DecimalFormat;
 public class Util {
 
   public static Pose2D squareToCircle(Pose2D pose) {
-    return new Pose2D(pose.x * Math.sqrt(1 - pose.x * pose.x / 2), pose.y * Math.sqrt(1 - pose.y * pose.y / 2), pose.ang);
+    return new Pose2D(pose.x * Math.sqrt(1 - pose.x * pose.x / 2), pose.y * Math.sqrt(1 - pose.y * pose.y / 2),
+        pose.ang);
   }
 
   public static double[] squareToCircle(double x, double y) {
