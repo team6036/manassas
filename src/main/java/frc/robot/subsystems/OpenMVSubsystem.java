@@ -20,8 +20,16 @@ public class OpenMVSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    int[] bits = sp.read();
-    dir = bits[0];
+    String sbits = sp.readString();
+    int[] bits = new int[sbits.length()];
+    for (int i = 0; i < sbits.length(); i++) {
+      if (sbits.substring(i, i+1).equals("0"))
+        bits[i] = 0;
+      else
+        bits[i] = 1;
+    }
+
+    dir = (int)bits[0];
     dist = binToInt(bits);
   }
 
