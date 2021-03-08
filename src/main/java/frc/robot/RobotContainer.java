@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.SwerveCommand;
-import frc.robot.subsystems.AlaapSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -23,8 +22,6 @@ public class RobotContainer {
 
     private final SwerveCommand m_swerveCommand = new SwerveCommand(m_swerveSubsystem, () -> stick.getX(),
             () -> stick.getY(), () -> stick.getThrottle());
-
-    AlaapSubsystem a_subsystem = new AlaapSubsystem();
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
