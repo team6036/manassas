@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.commands.AutoCommand;
 import frc.robot.commands.SwerveCommand;
+import frc.robot.subsystems.OpenMVSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -24,6 +25,7 @@ public class RobotContainer {
     private final static JoystickButton aButton = new JoystickButton(controller, XboxController.Button.kA.value);
 
     private final SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
+    private final OpenMVSubsystem m_openmvSubsystem = new OpenMVSubsystem();
 
     private final SwerveCommand m_swerveCommand = new SwerveCommand(m_swerveSubsystem,
             () -> controller.getX(Hand.kLeft), () -> controller.getY(Hand.kLeft), () -> controller.getX(Hand.kRight));
