@@ -1,3 +1,5 @@
+package frc.robot.subsystems;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.SerialPort;
 
@@ -32,6 +34,7 @@ public class OpenMVSubsystem extends SubsystemBase {
     dir = (int)bits[0];
     dist = binToInt(bits);
   }
+  
 
 
   public int[] getInfo() {
@@ -47,6 +50,7 @@ public class OpenMVSubsystem extends SubsystemBase {
         num += add;
       add *= 2;
     }
+    return num;
   }
 }
 
