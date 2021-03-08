@@ -37,9 +37,6 @@ public class SwerveController {
             if (gyroscope == null) {
                 throw new IllegalStateException("No Gyroscope configured for field relative drive");
             } else {
-                if(robotSpeeds==null){
-                    System.out.println("robotspeeds");
-                }
                 robotSpeeds = robotSpeeds.rotateVec(gyroscope.getAngle());
             }
 

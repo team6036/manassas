@@ -17,7 +17,6 @@ public class SwerveSubsystem extends SubsystemBase {
      * Creates a new ExampleSubsystem.
      */
     public SwerveSubsystem() {
-        robotSpeed = new Pose2D();
         double offsetX = Util.inchesToMeters(26 / 2); // ! compartmentalize
         double offsetY = Util.inchesToMeters(24 / 2); // ! compartmentalize
         swerve = new SwerveController(
