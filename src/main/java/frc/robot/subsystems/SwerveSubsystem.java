@@ -11,7 +11,7 @@ import frc.robot.common.SwerveController.Module;
 
 public class SwerveSubsystem extends SubsystemBase {
     SwerveController swerve;
-    Pose2D robotSpeed;
+    Pose2D robotSpeed = new Pose2D();
 
     /**
      * Creates a new ExampleSubsystem.
