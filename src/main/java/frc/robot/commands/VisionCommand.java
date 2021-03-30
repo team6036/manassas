@@ -4,6 +4,7 @@ import frc.robot.subsystems.OpenMVSubsystem;
 
 public class VisionCommand extends CommandBase {
     OpenMVSubsystem[] cameras;
+    //note that the openmvs have a 70* FOV
     public VisionCommand(OpenMVSubsystem...cameras) {
         this.cameras=cameras;
 
