@@ -7,6 +7,11 @@ import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.SerialPort.Parity;
 
 public class OpenMVSubsystem extends SubsystemBase {
+  public final double FOV_DEGREES = 70;
+  public final double FOV_RADIANS = FOV_DEGREES * Math.PI / 180.;
+  public final double HORZ_RESOLUTION = 320;
+  public final double VERT_RESOLUTION = 240;
+
   private SerialPort serialPort;
   private Port portID;
   private CameraLayout layout;
@@ -60,6 +65,28 @@ public class OpenMVSubsystem extends SubsystemBase {
     } catch (NullPointerException e) {
       System.out.println("USB Misconfigured on port " + (portID.value - 1));
     }
+  }
+
+  public double getAngle() {
+    return Math.atan((getPoint()[0] - HORZ_RESOLUTION / 2.) * (Math.tan(FOV_DEGREES * Math.PI / 180.) / 2.)
+        / (HORZ_RESOLUTION / 2.));
+  }
+
+  public static double sideLengthToArea(double side1, double side2, double side3) {
+    double s = (side1 + side2 + side3) / 2.;
+    return Math.sqrt(s * (s - side1) * (s - side2) * (s - side3));
+  }
+
+  /**
+   * Law of Sines
+   * 
+   * @param knownSide          length of known side
+   * @param correspondingAngle corresponding angle of knownSide in radians
+   * @param knownAngle         corresponding angle of unknown side in radians
+   * @return length of unknown side
+   */
+  public static double lawOfSines(double knownSide, double correspondingAngle, double knownAngle) {
+    return (knownSide / Math.sin(correspondingAngle)) * Math.sin(knownAngle);
   }
 
   public int getDist() {

@@ -1,8 +1,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.OpenMVSubsystem;
+import frc.robot.subsystems.OpenMVSubsystem.CameraLayout;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -14,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
     private Command m_teleopCommand;
     private RobotContainer m_robotContainer;
+    OpenMVSubsystem omv1 = new OpenMVSubsystem(Port.kUSB1, CameraLayout.Stereo);
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -46,6 +50,21 @@ public class Robot extends TimedRobot {
         // robot's periodic
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
+        System.out.println(omv1.getPoint());
+        System.out.println(omv1.getAngle());
+
+        // when second camera works
+        // assume omv1 is left, omv1 is right
+        /*
+         * double internalAngleLeft = 90 - omv1.getAngle(); double internalAngleRight =
+         * 90 + omv2.getAngle(); double separation_meters = ; double left_sidelength =
+         * OpenMVSubsystem.lawOfSines(separation_meters, 180 - internalAngleLeft -
+         * internalAngleRight, internalAngleRight); double right_sidelength =
+         * OpenMVSubsystem.lawOfSines(separation_meters, 180 - internalAngleLeft -
+         * internalAngleRight, internalAngleLeft); double area =
+         * OpenMVSubsystem.sideLengthToArea(left_sidelength, right_sidelength,
+         * separation_meters); double dist = 2*area/separation_meters;
+         */
     }
 
     /**
@@ -76,8 +95,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        m_teleopCommand = m_robotContainer.getTeleopCommand();
-        m_teleopCommand.schedule();
     }
 
     /**
