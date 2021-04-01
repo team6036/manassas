@@ -20,9 +20,9 @@ public class SwerveSubsystem extends SubsystemBase {
         double offsetX = Util.inchesToMeters(26 / 2); // ! compartmentalize
         double offsetY = Util.inchesToMeters(24 / 2); // ! compartmentalize
         swerve = new SwerveController(
-                new Module(1, 2, 9, new Pose2D(+offsetX, +offsetY, Util.normalizeAngle(0.632000 + Math.PI, Math.PI)),
+                new Module(1, 2, 9, new Pose2D(+offsetX, +offsetY, Util.normalizeAngle(0.632000 - 0.888175 + Math.PI, Math.PI)),
                         "backRight"),
-                new Module(3, 4, 10, new Pose2D(-offsetX, +offsetY, Util.normalizeAngle(2.727418 + Math.PI, Math.PI)),
+                new Module(3, 4, 10, new Pose2D(-offsetX, +offsetY, Util.normalizeAngle(2.727418 - 0.088971 + Math.PI, Math.PI)),
                         "frontRight"),
                 new Module(5, 6, 11, new Pose2D(-offsetX, -offsetY, Util.normalizeAngle(2.508059 + Math.PI, Math.PI)),
                         "frontLeft"),
