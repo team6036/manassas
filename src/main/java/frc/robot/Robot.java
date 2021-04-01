@@ -1,16 +1,6 @@
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
-import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -22,17 +12,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * project.
  */
 public class Robot extends TimedRobot {
-    private Command m_teleopCommand;
+    private Command m_teleopCommands[];
     private RobotContainer m_robotContainer;
-
-    public static XboxController xbox = new XboxController(0);
-    TalonFX balltube;
-    CANSparkMax revolver;
-    CANSparkMax otb;
-
-    Servo pusher;
-
-    PowerDistributionPanel pdp;
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -45,19 +26,6 @@ public class Robot extends TimedRobot {
         // autonomous chooser on the dashboard.
         m_robotContainer = new RobotContainer();
 
-        xbox = new XboxController(0);
-
-        balltube = new TalonFX(15);
-        revolver = new CANSparkMax(14, MotorType.kBrushless);
-        otb = new CANSparkMax(16, MotorType.kBrushless);
-
-        pusher = new Servo(9);
-
-        pdp = new PowerDistributionPanel(30);
-
-        SmartDashboard.putNumber("balltubePower", -0.8);
-        SmartDashboard.putNumber("revolverPower", 0.07);
-        SmartDashboard.putNumber("otbPower", 0.5);
     }
 
     /**
@@ -109,8 +77,10 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        m_teleopCommand = m_robotContainer.getTeleopCommand();
-        m_teleopCommand.schedule();
+        m_teleopCommands = m_robotContainer.getTeleopCommand();
+        for (Command c : m_teleopCommands) {
+            c.schedule();
+        }
     }
 
     /**
@@ -118,35 +88,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
-        double balltubePower = SmartDashboard.getNumber("balltubePower", 0);
-        double revolverPower = SmartDashboard.getNumber("revolverPower", 0);
-        double otbPower = SmartDashboard.getNumber("otbPower", 0);
-
-        SmartDashboard.putNumber("otb current", pdp.getCurrent(2));
-        SmartDashboard.putNumber("revolver current", pdp.getCurrent(5));
-        SmartDashboard.putNumber("balltube current", pdp.getCurrent(11));
-
-        SmartDashboard.putNumber("total current", pdp.getTotalCurrent());
-
-        if(xbox.getBumper(Hand.kRight)){
-            otb.set(otbPower);
-            revolver.set(revolverPower);
-        }else if(xbox.getBumper(Hand.kLeft)){
-            otb.set(-otbPower);
-            revolver.set(-revolverPower);
-        }else{
-            otb.set(0);
-            revolver.set(0);
-        }
-
-        if(xbox.getTriggerAxis(Hand.kRight) > 0.2){
-            balltube.set(ControlMode.PercentOutput, balltubePower);
-            pusher.setPosition(0.35);
-        }else{
-            balltube.set(ControlMode.PercentOutput, 0);
-            pusher.setPosition(0.8);
-        }
-
 
     }
 

@@ -4,8 +4,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import frc.robot.commands.SwerveCommand;
-import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /**
@@ -17,10 +17,21 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-    private final SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
 
-    private final SwerveCommand m_swerveCommand = new SwerveCommand(m_swerveSubsystem, () -> Robot.xbox.getX(Hand.kLeft),
-            () -> Robot.xbox.getY(Hand.kLeft), () -> Robot.xbox.getX(Hand.kRight));
+    public static XboxController xbox = new XboxController(0);
+
+    private final SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
+    private final BalltubeSubsystem m_balltubeSubsystem = new BalltubeSubsystem();
+    private final OTBSubsystem m_OTBSubsytem = new OTBSubsystem();
+    private final RevolverSubsystem m_revolverSubsystem = new RevolverSubsystem();
+
+    private final SwerveCommand m_swerveCommand = new SwerveCommand(m_swerveSubsystem, () -> xbox.getX(Hand.kLeft),
+            () -> xbox.getY(Hand.kLeft), () -> xbox.getX(Hand.kRight));
+    private final BalltubeCommand m_balltubeCommand = new BalltubeCommand(m_balltubeSubsystem,
+            () -> xbox.getBumper(Hand.kLeft));
+    private final OTBCommand m_OTBCommand = new OTBCommand(m_OTBSubsytem, () -> xbox.getBumper(Hand.kRight));
+    private final RevolverCommand m_revolverCommand = new RevolverCommand(m_revolverSubsystem,
+            () -> xbox.getBumper(Hand.kRight));
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -46,10 +57,10 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-        return null;
+        return m_swerveCommand;
     }
 
-    public Command getTeleopCommand() {
-        return m_swerveCommand;
+    public Command[] getTeleopCommand() {
+        return new Command[] { m_swerveCommand, m_balltubeCommand, m_OTBCommand, m_revolverCommand };
     }
 }
