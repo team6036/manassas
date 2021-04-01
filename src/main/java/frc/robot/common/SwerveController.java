@@ -137,7 +137,7 @@ public class SwerveController {
             Vector2D linVelo = robotSpeeds.getVector2D();
             double angVelo = robotSpeeds.ang;
 
-            if (linVelo.getMagnitude() < 0.1 && Math.abs(angVelo) < 0.1) {
+            if (linVelo.getMagnitude() < 0.2 && Math.abs(angVelo) < 0.2) {
                 linVelo = new Vector2D();
                 angVelo = 0;
             }
