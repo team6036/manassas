@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,6 +19,7 @@ public class Robot extends TimedRobot {
     private Command m_teleopCommand;
     private RobotContainer m_robotContainer;
     OpenMVSubsystem omv1 = new OpenMVSubsystem(Port.kUSB1, CameraLayout.Stereo);
+    OpenMVSubsystem omv2 = new OpenMVSubsystem(Port.kUSB2, CameraLayout.Stereo);
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -50,8 +52,8 @@ public class Robot extends TimedRobot {
         // robot's periodic
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
-        System.out.println(omv1.getPoint());
-        System.out.println(omv1.getAngle());
+        System.out.println(omv1.getPoint()[0]);
+        System.out.println(omv2.getPoint()[0]);
 
         // when second camera works
         // assume omv1 is left, omv1 is right

@@ -24,7 +24,7 @@ public class OpenMVSubsystem extends SubsystemBase {
   // "f"+1 to 3 digits+"b\r\n"
   private static Pattern areaBased = Pattern.compile("f\\d{1,3}b\\r\\n");
   // "f"+3 digit x+"|"+3 digit y+"b\r\n"
-  private static Pattern stereoBased = Pattern.compile("f\\d{1,3}|\\d{1,3}b\\r\\n");
+  private static Pattern stereoBased = Pattern.compile("f\\d{1,3}\\|\\d{1,3}b\\r\\n");
   // the f and b are there to add checks, ensuring that messages arent being
   // mashed together or split
 
@@ -33,6 +33,7 @@ public class OpenMVSubsystem extends SubsystemBase {
     this.layout = layout;
     try {
       serialPort = new SerialPort(9600, portID, 8, Parity.kNone);
+      System.out.println("USB " + (portID.value - 1) + " configured");
     } catch (IllegalStateException e) {
       System.out.println("USB " + (portID.value - 1) + " not plugged in");
     }
@@ -45,12 +46,12 @@ public class OpenMVSubsystem extends SubsystemBase {
       String message = serialPort.readString();
       if (areaBased.matcher(message).matches() && layout.equals(CameraLayout.AreaBased)) {
         switch (message.charAt(1)) {
-          case '0':
-            this.side = Side.Left;
-            break;
-          case '1':
-            this.side = Side.Right;
-            break;
+        case '0':
+          this.side = Side.Left;
+          break;
+        case '1':
+          this.side = Side.Right;
+          break;
         }
         // String.substring -> [a,b)
         this.distance = Integer.valueOf(message.substring(2, message.indexOf("b")));
@@ -64,6 +65,7 @@ public class OpenMVSubsystem extends SubsystemBase {
       }
     } catch (NullPointerException e) {
       System.out.println("USB Misconfigured on port " + (portID.value - 1));
+      serialPort = new SerialPort(9600, portID, 8, Parity.kNone);
     }
   }
 
@@ -72,6 +74,14 @@ public class OpenMVSubsystem extends SubsystemBase {
         / (HORZ_RESOLUTION / 2.));
   }
 
+  /**
+   * Heron's method
+   * 
+   * @param side1
+   * @param side2
+   * @param side3
+   * @return area of triangle with three given sidelengths
+   */
   public static double sideLengthToArea(double side1, double side2, double side3) {
     double s = (side1 + side2 + side3) / 2.;
     return Math.sqrt(s * (s - side1) * (s - side2) * (s - side3));
