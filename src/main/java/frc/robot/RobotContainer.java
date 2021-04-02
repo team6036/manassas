@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-
+    public static boolean otbPosition; // 0 up 1 down
     public static XboxController xbox = new XboxController(0);
 
     private final SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
@@ -29,7 +29,8 @@ public class RobotContainer {
             () -> xbox.getY(Hand.kLeft), () -> xbox.getX(Hand.kRight));
     private final BalltubeCommand m_balltubeCommand = new BalltubeCommand(m_balltubeSubsystem,
             () -> xbox.getBumper(Hand.kLeft));
-    private final OTBCommand m_OTBCommand = new OTBCommand(m_OTBSubsytem, () -> xbox.getBumper(Hand.kRight));
+    private final OTBCommand m_OTBCommand = new OTBCommand(m_OTBSubsytem, () -> xbox.getBumper(Hand.kRight),
+            () -> xbox.getAButton());
     private final RevolverCommand m_revolverCommand = new RevolverCommand(m_revolverSubsystem,
             () -> xbox.getBumper(Hand.kRight));
 
@@ -57,7 +58,7 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-        return m_swerveCommand;
+        return null;
     }
 
     public Command[] getTeleopCommand() {

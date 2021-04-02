@@ -18,7 +18,7 @@ public class BalltubeSubsystem extends SubsystemBase {
     }
 
     public void start() {
-        balltube.set(ControlMode.PercentOutput, 0.4);
+        balltube.set(ControlMode.PercentOutput, -0.4);
         pusher.setPosition(0.35);
 
     }

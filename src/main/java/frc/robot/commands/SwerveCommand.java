@@ -29,9 +29,7 @@ public class SwerveCommand extends CommandBase {
         addRequirements(m_subsystem);
     }
 
-
-
-	// Called when the command is initially scheduled.
+    // Called when the command is initially scheduled.
     @Override
     public void initialize() {
     }
@@ -39,10 +37,8 @@ public class SwerveCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        m_subsystem.drive(new Pose2D(
-            -stickY.getAsDouble(),
-            -stickX.getAsDouble(),
-            2 * stickRot.getAsDouble()).scalarMult(2));
+        m_subsystem.drive(
+                new Pose2D(stickY.getAsDouble(), stickX.getAsDouble(), 2 * stickRot.getAsDouble()).scalarMult(2));
     }
 
     // Called once the command ends or is interrupted.

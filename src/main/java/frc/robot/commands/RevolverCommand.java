@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.RevolverSubsystem;
 
 public class RevolverCommand extends CommandBase {
-    private static final double power = 0.4;
+    private static final double power = 0.05;
     RevolverSubsystem subsystem;
     BooleanSupplier supplier;
 

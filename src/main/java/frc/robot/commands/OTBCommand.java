@@ -9,18 +9,22 @@ import frc.robot.subsystems.OTBSubsystem;
 public class OTBCommand extends CommandBase {
     private OTBSubsystem subsystem;
     private BooleanSupplier supplier;
-    public static final double power = .4;
+    private BooleanSupplier aButtonSupplier;
+    public static final double power = .3;
 
-    public OTBCommand(OTBSubsystem subsystem, BooleanSupplier supplier) {
+    public OTBCommand(OTBSubsystem subsystem, BooleanSupplier supplier, BooleanSupplier aButtonSupplier) {
         this.subsystem = subsystem;
         this.supplier = supplier;
+        this.aButtonSupplier = aButtonSupplier;
         addRequirements(subsystem);
     }
 
     @Override
     public void execute() {
-        if (supplier.getAsBoolean()) {
+        if (supplier.getAsBoolean() && !aButtonSupplier.getAsBoolean()) {
             start();
+        } else if (aButtonSupplier.getAsBoolean()) {
+            reverse();
         } else {
             stop();
         }
@@ -31,6 +35,10 @@ public class OTBCommand extends CommandBase {
     }
 
     public void stop() {
-        subsystem.setPower(-0.02);// to prevent thing from slamming down
+        subsystem.setPower(0);// to prevent thing from slamming down
+    }
+
+    public void reverse() {
+        subsystem.setPower(-1);
     }
 }
