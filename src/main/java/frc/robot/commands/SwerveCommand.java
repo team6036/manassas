@@ -14,20 +14,18 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class SwerveCommand extends CommandBase {
     private final SwerveSubsystem m_subsystem;
     private final DoubleSupplier stickX, stickY, stickRot;
-    private final BooleanSupplier zeroWheels, zeroOdometry;
+    private final BooleanSupplier zeroOdometry;
 
     /**
      * Creates a new ExampleCommand.
      *
      * @param subsystem The subsystem used by this command.
      */
-    public SwerveCommand(SwerveSubsystem swerve, DoubleSupplier stickX, DoubleSupplier stickY, DoubleSupplier stickRot,
-            BooleanSupplier zeroWheels, BooleanSupplier zeroOdometry) {
+    public SwerveCommand(SwerveSubsystem swerve, DoubleSupplier stickX, DoubleSupplier stickY, DoubleSupplier stickRot, BooleanSupplier zeroOdometry) {
         m_subsystem = swerve;
         this.stickX = stickX;
         this.stickY = stickY;
         this.stickRot = stickRot;
-        this.zeroWheels = zeroWheels;
         this.zeroOdometry = zeroOdometry;
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(m_subsystem);
@@ -41,9 +39,6 @@ public class SwerveCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if (zeroWheels.getAsBoolean()) {
-            m_subsystem.zeroWheels();
-        }
         if (zeroOdometry.getAsBoolean()) {
             m_subsystem.recalibrateOdometry();
         }

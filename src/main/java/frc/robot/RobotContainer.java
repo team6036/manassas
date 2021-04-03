@@ -23,9 +23,9 @@ public class RobotContainer {
     private final SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
 
     private final SwerveCommand m_swerveCommand = new SwerveCommand(m_swerveSubsystem,
-            () -> controller.getX(Hand.kLeft), () -> controller.getY(Hand.kLeft), () -> controller.getX(Hand.kRight), () -> controller.getAButton(), () -> controller.getXButton());
+            () -> controller.getX(Hand.kLeft), () -> controller.getY(Hand.kLeft), () -> controller.getX(Hand.kRight), () -> controller.getXButton());
 
-    private final AutoCommand m_autoCommand = new AutoCommand(() -> controller.getXButton(), () -> controller.getAButton(), m_swerveSubsystem);
+    private final AutoCommand m_autoCommand = new AutoCommand(() -> controller.getXButton(), m_swerveSubsystem);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.

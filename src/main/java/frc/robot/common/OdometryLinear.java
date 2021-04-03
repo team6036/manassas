@@ -15,7 +15,7 @@ public class OdometryLinear {
     }
 
     public void zero(){
-        robotPose = new Pose2D(1.36, 2.19, 0);
+        robotPose = new Pose2D();
         gyro.calibrate();
     }
 
