@@ -7,7 +7,7 @@ import frc.robot.common.Util;
 
 public class Constants { // ! KSI + radians for all!!
     public static class Debug {
-        public static final boolean odometryDebug = false; // terminal
+        public static final boolean odometryDebug = true; // terminal
         public static final boolean swerveDebug = true; // smartdashboard
     }
 

@@ -158,12 +158,6 @@ public class SwerveController {
             Vector2D linVelo = robotSpeeds.getVector2D();
             double angVelo = robotSpeeds.ang;
 
-            //TODO standardize deadbands, move to const.
-            if (linVelo.getMagnitude() < 0.1 && Math.abs(angVelo) < 0.1) {
-                linVelo = new Vector2D();
-                angVelo = 0;
-            }
-
             // ask chis for vector math derivation
             targetSpeedVector = linVelo.add(placement.scalarMult(angVelo).rotate90());
 

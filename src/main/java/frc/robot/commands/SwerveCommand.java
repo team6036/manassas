@@ -21,7 +21,8 @@ public class SwerveCommand extends CommandBase {
      *
      * @param subsystem The subsystem used by this command.
      */
-    public SwerveCommand(SwerveSubsystem swerve, DoubleSupplier stickX, DoubleSupplier stickY, DoubleSupplier stickRot, BooleanSupplier zeroOdometry) {
+    public SwerveCommand(SwerveSubsystem swerve, DoubleSupplier stickX, DoubleSupplier stickY, DoubleSupplier stickRot,
+            BooleanSupplier zeroOdometry) {
         m_subsystem = swerve;
         this.stickX = stickX;
         this.stickY = stickY;
@@ -34,6 +35,7 @@ public class SwerveCommand extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+        m_subsystem.recalibrateOdometry();
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -42,9 +44,17 @@ public class SwerveCommand extends CommandBase {
         if (zeroOdometry.getAsBoolean()) {
             m_subsystem.recalibrateOdometry();
         }
-        m_subsystem.drive(Util
-                .squareToCircle(new Pose2D(-stickY.getAsDouble(), -stickX.getAsDouble(), 2 * stickRot.getAsDouble()))
-                .scalarMult(2), true);
+        double driveRotation = stickRot.getAsDouble()*2;
+        if(Math.abs(driveRotation)<=0.05){
+            driveRotation=0;
+        }
+        Pose2D driveTranslation = Util
+                .squareToCircle(new Pose2D(-stickY.getAsDouble(), -stickX.getAsDouble(), driveRotation))
+                .scalarMult(2);
+        if (driveTranslation.getMagnitude() < 0.15) {
+            driveTranslation = new Pose2D(0, 0, driveRotation);
+        }
+        m_subsystem.drive(driveTranslation, true);
 
     }
 

@@ -25,7 +25,7 @@ public class RobotContainer {
     private final static JoystickButton aButton = new JoystickButton(controller, XboxController.Button.kA.value);
 
     private final SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
-    private final OpenMVSubsystem m_openmvSubsystem = new OpenMVSubsystem();
+    //private final OpenMVSubsystem m_openmvSubsystem = new OpenMVSubsystem();
 
     private final SwerveCommand m_swerveCommand = new SwerveCommand(m_swerveSubsystem,
             () -> controller.getX(Hand.kLeft), () -> controller.getY(Hand.kLeft), () -> controller.getX(Hand.kRight),

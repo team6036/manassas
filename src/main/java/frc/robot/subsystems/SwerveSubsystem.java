@@ -42,7 +42,8 @@ public class SwerveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         swerve.nyoom(robotSpeed, fieldRelative);
-
+        //TODO: make chassis angle PID controlled to prevent drift
+        //TODO: build paths
         if (Debug.swerveDebug) {
             for (int i = 0; i < swerve.getModules().length; i++) {
                 log(swerve.getModules()[i].getName() + " target",
