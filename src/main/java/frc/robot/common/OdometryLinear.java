@@ -20,6 +20,11 @@ public class OdometryLinear {
         this.placements = placements;
     }
 
+    public void zero() {
+        robotPose = new Pose2D();
+        gyro.calibrate();
+    }
+
     /**
      * Updates position given each modules angle and distance travelled
      * 
@@ -65,11 +70,6 @@ public class OdometryLinear {
 
     public Pose2D getCurrentPose() {
         return robotPose;
-    }
-
-    public void zero() {
-        robotPose = new Pose2D(1.36, 2.19, 0); // Compartmentalize
-        gyro.calibrate();
     }
 
     public static class WheelData {

@@ -28,8 +28,10 @@ public class RobotContainer {
     private final OpenMVSubsystem m_openmvSubsystem = new OpenMVSubsystem();
 
     private final SwerveCommand m_swerveCommand = new SwerveCommand(m_swerveSubsystem,
-            () -> controller.getX(Hand.kLeft), () -> controller.getY(Hand.kLeft), () -> controller.getX(Hand.kRight));
-    private final AutoCommand m_autoCommand = new AutoCommand(m_swerveSubsystem);
+            () -> controller.getX(Hand.kLeft), () -> controller.getY(Hand.kLeft), () -> controller.getX(Hand.kRight),
+            () -> controller.getXButton());
+
+    private final AutoCommand m_autoCommand = new AutoCommand(() -> controller.getXButton(), m_swerveSubsystem);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
