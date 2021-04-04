@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.common.Pose2D;
 import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.Debug;
 
 public class AutoCommand extends CommandBase {
@@ -28,7 +27,6 @@ public class AutoCommand extends CommandBase {
     private final SwerveSubsystem swerve;
     private final HolonomicDriveController m_controller;
     private Trajectory trajectory;
-    private Trajectory.State firstState;
     private Pose2d initialPose;
     private BooleanSupplier odoRecalibrate;
 
@@ -78,10 +76,8 @@ public class AutoCommand extends CommandBase {
             System.out.println("desiredState: " + desiredState.poseMeters);
             System.out.println("currentState: " + swerve.getController().odo.getCurrentPose());
         }
-        swerve.drive(new Pose2D(0.11, 0, 0), false);
-        // swerve.drive(new Pose2D(targetChassisSpeeds.vxMetersPerSecond,
-        // targetChassisSpeeds.vyMetersPerSecond,
-        // targetChassisSpeeds.omegaRadiansPerSecond), false);
+        swerve.drive(new Pose2D(targetChassisSpeeds.vxMetersPerSecond, targetChassisSpeeds.vyMetersPerSecond,
+                targetChassisSpeeds.omegaRadiansPerSecond), false);
     }
 
     public void zero() {
