@@ -1,8 +1,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.OpenMVSubsystem;
+import frc.robot.subsystems.OpenMVSubsystem.CameraLayout;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -48,6 +51,20 @@ public class Robot extends TimedRobot {
         // robot's periodic
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
+
+
+        // this math is for both cameras working
+        // assume omv1 is left, omv1 is right
+        /*
+         * double internalAngleLeft = 90 - omv1.getAngle(); double internalAngleRight =
+         * 90 + omv2.getAngle(); double separation_meters = ; double left_sidelength =
+         * OpenMVSubsystem.lawOfSines(separation_meters, 180 - internalAngleLeft -
+         * internalAngleRight, internalAngleRight); double right_sidelength =
+         * OpenMVSubsystem.lawOfSines(separation_meters, 180 - internalAngleLeft -
+         * internalAngleRight, internalAngleLeft); double area =
+         * OpenMVSubsystem.sideLengthToArea(left_sidelength, right_sidelength,
+         * separation_meters); double dist = 2*area/separation_meters;
+         */
     }
 
     /**
