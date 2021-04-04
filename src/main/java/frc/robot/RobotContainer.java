@@ -1,7 +1,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import frc.robot.commands.*;
@@ -17,22 +16,24 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-    public static boolean otbPosition; // 0 up 1 down
-    public static XboxController xbox = new XboxController(0);
+    private final static XboxController controller = new XboxController(0);
 
     private final SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
     private final BalltubeSubsystem m_balltubeSubsystem = new BalltubeSubsystem();
     private final OTBSubsystem m_OTBSubsytem = new OTBSubsystem();
     private final RevolverSubsystem m_revolverSubsystem = new RevolverSubsystem();
+    // private final OpenMVSubsystem m_openmvSubsystem = new OpenMVSubsystem();
 
-    private final SwerveCommand m_swerveCommand = new SwerveCommand(m_swerveSubsystem, () -> xbox.getX(Hand.kLeft),
-            () -> xbox.getY(Hand.kLeft), () -> xbox.getX(Hand.kRight));
+    private final SwerveCommand m_swerveCommand = new SwerveCommand(m_swerveSubsystem,
+            () -> controller.getX(Hand.kLeft), () -> controller.getY(Hand.kLeft), () -> controller.getX(Hand.kRight),
+            () -> controller.getXButton());
+    private final AutoCommand m_autoCommand = new AutoCommand(() -> controller.getXButton(), m_swerveSubsystem);
     private final BalltubeCommand m_balltubeCommand = new BalltubeCommand(m_balltubeSubsystem,
-            () -> xbox.getBumper(Hand.kLeft));
-    private final OTBCommand m_OTBCommand = new OTBCommand(m_OTBSubsytem, () -> xbox.getBumper(Hand.kRight),
-            () -> xbox.getAButton());
+            () -> controller.getBumper(Hand.kLeft));
+    private final OTBCommand m_OTBCommand = new OTBCommand(m_OTBSubsytem, () -> controller.getBumper(Hand.kRight),
+            () -> controller.getAButton());
     private final RevolverCommand m_revolverCommand = new RevolverCommand(m_revolverSubsystem,
-            () -> xbox.getBumper(Hand.kRight));
+            () -> controller.getBumper(Hand.kRight));
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -58,10 +59,10 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-        return null;
+        return m_autoCommand;
     }
 
-    public Command[] getTeleopCommand() {
+    public Command[] getTeleopCommands() {
         return new Command[] { m_swerveCommand, m_balltubeCommand, m_OTBCommand, m_revolverCommand };
     }
 }

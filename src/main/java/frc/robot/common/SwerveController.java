@@ -1,27 +1,37 @@
 package frc.robot.common;
 
+import java.util.ArrayList;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
+import frc.robot.common.OdometryLinear.WheelData;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 
 public class SwerveController {
-    private Gyroscope gyroscope;
+    private static double WHEEL_RADIUS, DRIVE_RATIO;
+    private final Gyroscope gyroscope;
+    public final OdometryLinear odo;
+    private Pose2D velPose = new Pose2D();
+    public Module[] modules;
 
-    private final Module[] modules;
-    private Pose2D velPose;
-
-    static final double DRIVE_RATIO = 6.86; // ! compartmentalize
-    static final double WHEEL_RADIUS = Util.inchesToMeters(2); // ! compartmentalize
-
-    public SwerveController(Module... modules) {
-        this.modules = modules;
-    }
-
-    public SwerveController addGyro(Gyroscope gyroscope) {
+    /**
+     * @param driveRatio  Gear ratio for drive motors
+     * @param wheelRadius Radius of wheels in METERS
+     * @param gyroscope
+     * @param modules
+     */
+    public SwerveController(double driveRatio, double wheelRadius, Gyroscope gyroscope, Module... modules) {
+        WHEEL_RADIUS = wheelRadius;
+        DRIVE_RATIO = driveRatio;
+        Pose2D[] placements = new Pose2D[modules.length];
+        for (int moduleIndex = 0; moduleIndex < modules.length; moduleIndex++) {
+            placements[moduleIndex] = modules[moduleIndex].placement;
+        }
         this.gyroscope = gyroscope;
-        return this;
+        odo = new OdometryLinear(gyroscope, placements);
+        this.modules = modules;
     }
 
     /**
@@ -32,6 +42,8 @@ public class SwerveController {
      * @param fieldRelative Field relative drive (requires gyro)
      */
     public void nyoom(Pose2D robotSpeeds, boolean fieldRelative) {
+        ArrayList<WheelData> wheelSteps = new ArrayList<WheelData>();
+
         velPose = robotSpeeds;
         if (fieldRelative) {
             if (gyroscope == null) {
@@ -43,16 +55,24 @@ public class SwerveController {
         }
         for (Module module : modules) {
             module.move(robotSpeeds, true, true);
+            double avgAngle = (module.currentAngle + module.lastAngle) / 2.0;
+            double distStep = module.currentDrivePos - module.lastDrivePos;
+            wheelSteps.add(new WheelData(avgAngle, distStep));
         }
+        odo.update(wheelSteps);
     }
 
     /**
      * Zeroes all modules relative to chassis
      */
-    public void zero() {
+    public void zeroWheels() {
         for (Module module : modules) {
             module.move(new Pose2D(1, 0, 0), true, false);
         }
+    }
+
+    public void recalibrateOdometry() {
+        odo.zero();
     }
 
     public Module[] getModules() {
@@ -106,6 +126,7 @@ public class SwerveController {
          * @param name         Name for logging purposes
          */
         public Module(int turnMotorID, int driveMotorID, int cancoderID, Pose2D pose2d, String name) {
+            // TODO Consider moving this to constants?
             this.name = name;
             turnMotor = new WPI_TalonFX(turnMotorID);
             driveMotor = new WPI_TalonFX(driveMotorID);
@@ -120,9 +141,9 @@ public class SwerveController {
             turnMotor.configRemoteFeedbackFilter(cancoder, 0);
             turnMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
 
-            turnMotor.config_kF(0, 0, 0);
-            turnMotor.config_kP(0, 0.25, 0);
-            turnMotor.config_kI(0, 0.00025, 0);
+            turnMotor.config_kF(0, 0.002, 0);
+            turnMotor.config_kP(0, 0.50, 0);
+            turnMotor.config_kI(0, 0.0005, 0);
             turnMotor.config_kD(0, 0, 0);
 
             driveMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
@@ -137,11 +158,6 @@ public class SwerveController {
             Vector2D linVelo = robotSpeeds.getVector2D();
             double angVelo = robotSpeeds.ang;
 
-            if (linVelo.getMagnitude() < 0.2 && Math.abs(angVelo) < 0.2) {
-                linVelo = new Vector2D();
-                angVelo = 0;
-            }
-
             // ask chis for vector math derivation
             targetSpeedVector = linVelo.add(placement.scalarMult(angVelo).rotate90());
 
@@ -154,10 +170,11 @@ public class SwerveController {
             targetAngle = targetSpeedVector.getAngle();
             targetDriveSpeed = targetSpeedVector.getMagnitude();
 
-            if (Math.abs(targetDriveSpeed) < 0.1) { // was 0.5
+            if (Math.abs(targetDriveSpeed) < -0.1) { // was 0.5
                 targetAngle = closest180(currentAngle, targetAngle);
                 if (reversed)
                     targetDriveSpeed *= -1;
+                targetDriveSpeed = 0;
             } else {
                 if (reversed) {
                     targetAngle = closest360(currentAngle, targetAngle + Math.PI);

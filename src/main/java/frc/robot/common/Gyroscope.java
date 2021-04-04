@@ -24,7 +24,7 @@ public class Gyroscope {
      * @return Yaw in radians
      */
     public double getAngle() {
-        return Math.toRadians(navX.getYaw());
+        return Math.toRadians(navX.getYaw()-Math.PI);
     }
 
     /**

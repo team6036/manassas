@@ -4,6 +4,22 @@ import java.text.DecimalFormat;
 
 public class Util {
 
+  public static Pose2D squareToCircle(Pose2D pose) {
+    return new Pose2D(pose.x * Math.sqrt(1 - pose.x * pose.x / 2), pose.y * Math.sqrt(1 - pose.y * pose.y / 2),
+        pose.ang);
+  }
+
+  public static double[] squareToCircle(double x, double y) {
+    // when you want to "squeeze" points of a square coordinate plane onto a circle
+    // one, ex (1, 1) maps to (0.707, 0.707)
+    // visit http://squircular.blogspot.com/2015/09/mapping-circle-to-square.html
+    // for more info
+
+    double u = x * Math.sqrt(1 - y * y / 2);
+    double v = y * Math.sqrt(1 - x * x / 2);
+    return new double[] { u, v };
+  }
+
   public static double applyFrictions(double force, double velocity, double STATIC_FRIC, double KINE_FRIC,
       double VISCOUS_FRIC, double FRIC_THRESHOLD) {
     // if not moving and force is not enough to overcome static friction, net force
