@@ -54,10 +54,10 @@ public class SwerveController {
 
         }
         for (Module module : modules) {
-            module.move(robotSpeeds, true, true);
+            module.move(robotSpeeds, true, true); // drive
             double avgAngle = (module.currentAngle + module.lastAngle) / 2.0;
             double distStep = module.currentDrivePos - module.lastDrivePos;
-            wheelSteps.add(new WheelData(avgAngle, distStep));
+            wheelSteps.add(new WheelData(avgAngle, distStep)); // odo
         }
         odo.update(wheelSteps);
     }
@@ -93,8 +93,11 @@ public class SwerveController {
      * 
      * @return angle in radians
      */
-    public double getAngle() {
-        return gyroscope.getAngle();
+    public double getCurrentAngle() {
+        return odo.getCurrentTheta();
+    }
+    public double getTargetTheta(){
+        return odo.getTargetTheta();
     }
 
     public static class Module {
@@ -125,13 +128,13 @@ public class SwerveController {
          *                     module, angle offset of CANCODER from 'front' or fobot}
          * @param name         Name for logging purposes
          */
-        public Module(int turnMotorID, int driveMotorID, int cancoderID, Pose2D pose2d, String name) {
+        public Module(int turnMotorID, int driveMotorID, int cancoderID, Pose2D placement, String name) {
             // TODO Consider moving this to constants?
             this.name = name;
             turnMotor = new WPI_TalonFX(turnMotorID);
             driveMotor = new WPI_TalonFX(driveMotorID);
             cancoder = new CANCoder(cancoderID);
-            this.placement = pose2d;
+            this.placement = placement;
 
             driveMotor.configFactoryDefault();
             turnMotor.configFactoryDefault();

@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import org.ejml.simple.*;
 
 public class OdometryLinear {
-    private Pose2D robotPose = new Pose2D();
+    private Pose2D robotPose = new Pose2D(); // note that because we are assuming that the x and y components of the
+                                             // pose are accurate, while the angle is not (partially due to use of
+                                             // .exp()), which is instead supplied by the gyroscope
     private Gyroscope gyro;
     private Pose2D[] placements;
 
@@ -30,9 +32,9 @@ public class OdometryLinear {
      * 
      * @param wheelData
      */
-    public void update(WheelData... wheelData) {
+    public void update(WheelData[] wheelData) {
         if (wheelData.length != placements.length) {
-            throw new RuntimeException("num wheels not same");
+            throw new IllegalStateException("num wheels not same");
         }
 
         SimpleMatrix A = new SimpleMatrix(placements.length * 2, 3);
@@ -53,7 +55,6 @@ public class OdometryLinear {
         Pose2D robotStep = new Pose2D(x.get(0), x.get(1), x.get(2)).rotateVec(robotPose.ang);
 
         robotPose = robotPose.exp(robotStep);
-
         robotPose.ang = gyro.getAngle();
     }
 
@@ -70,6 +71,14 @@ public class OdometryLinear {
 
     public Pose2D getCurrentPose() {
         return robotPose;
+    }
+
+    public double getTargetTheta() {
+        return 0;
+    }
+
+    public double getCurrentTheta() {
+        return gyro.getAngle();
     }
 
     public static class WheelData {

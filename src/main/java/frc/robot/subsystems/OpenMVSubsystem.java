@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.regex.Pattern;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.SerialPort.Parity;
@@ -34,7 +36,7 @@ public class OpenMVSubsystem extends SubsystemBase {
     try {
       serialPort = new SerialPort(9600, portID, 8, Parity.kNone);
     } catch (IllegalStateException e) {
-      System.out.println("USB " + (portID.value - 1) + " not plugged in");
+      DriverStation.reportError("USB " + (portID.value - 1) + " not plugged in",e.getStackTrace());
     }
   }
 
@@ -63,7 +65,7 @@ public class OpenMVSubsystem extends SubsystemBase {
         this.point[1] = Integer.valueOf(message.substring(message.indexOf("|") + 1, message.indexOf("b")));
       }
     } catch (NullPointerException e) {
-      System.out.println("USB Misconfigured on port " + (portID.value - 1));
+      DriverStation.reportError("USB Misconfigured on port " + (portID.value - 1), e.getStackTrace());
     }
   }
 

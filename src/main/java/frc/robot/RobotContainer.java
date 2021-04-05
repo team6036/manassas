@@ -27,7 +27,7 @@ public class RobotContainer {
     private final SwerveCommand m_swerveCommand = new SwerveCommand(m_swerveSubsystem,
             () -> controller.getX(Hand.kLeft), () -> controller.getY(Hand.kLeft), () -> controller.getX(Hand.kRight),
             () -> controller.getXButton());
-    private final AutoCommand m_autoCommand = new AutoCommand(() -> controller.getXButton(), m_swerveSubsystem);
+    private final AutoCommand m_autoCommand = new AutoCommand(() -> controller.getXButton(), m_swerveSubsystem, m_OTBSubsytem);
     private final BalltubeCommand m_balltubeCommand = new BalltubeCommand(m_balltubeSubsystem,
             () -> controller.getBumper(Hand.kLeft));
     private final OTBCommand m_OTBCommand = new OTBCommand(m_OTBSubsytem, () -> controller.getBumper(Hand.kRight),

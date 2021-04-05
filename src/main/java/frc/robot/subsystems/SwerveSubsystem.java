@@ -42,8 +42,9 @@ public class SwerveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         swerve.nyoom(robotSpeed, fieldRelative);
-        //TODO: make chassis angle PID controlled to prevent drift
-        //TODO: build paths
+        // TODO: make chassis angle PID controlled to prevent drift
+        // TODO: Work with chis to add a estimated chassis angle in order to actually be
+        // able to measure error of it
         if (Debug.swerveDebug) {
             for (int i = 0; i < swerve.getModules().length; i++) {
                 log(swerve.getModules()[i].getName() + " target",
@@ -51,8 +52,8 @@ public class SwerveSubsystem extends SubsystemBase {
                 log(swerve.getModules()[i].getName() + " current",
                         Util.normalizeAngle(swerve.getModules()[i].getCurrentAngle(), Math.PI));
             }
-            log("Chassis angle", swerve.getAngle());
-            log("Pose angle", swerve.getTarget().ang);
+            log("Current angle", swerve.getCurrentAngle());
+            log("Target angle", swerve.getTargetTheta());
         }
     }
 

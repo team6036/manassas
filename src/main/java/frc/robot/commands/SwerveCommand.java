@@ -54,7 +54,7 @@ public class SwerveCommand extends CommandBase {
         if (driveTranslation.getMagnitude() < 0.15) {
             driveTranslation = new Pose2D(0, 0, driveRotation);
         }
-        m_subsystem.drive(driveTranslation, true);
+        //m_subsystem.drive(driveTranslation, true);
 
     }
 

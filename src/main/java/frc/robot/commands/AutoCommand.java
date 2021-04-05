@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.common.Pose2D;
+import frc.robot.subsystems.OTBSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.Constants.Debug;
 
@@ -26,6 +27,7 @@ public class AutoCommand extends CommandBase {
     private final Timer timer = new Timer();
     private final SwerveSubsystem swerve;
     private final HolonomicDriveController m_controller;
+    private final OTBSubsystem otb;
     private Trajectory trajectory;
     private Pose2d initialPose;
     private BooleanSupplier odoRecalibrate;
@@ -36,19 +38,24 @@ public class AutoCommand extends CommandBase {
      * @param swerve         Swerve Subsystem
      */
 
-    public AutoCommand(BooleanSupplier odoRecalibrate, SwerveSubsystem swerve) {
+    public AutoCommand(BooleanSupplier odoRecalibrate, SwerveSubsystem swerve, OTBSubsystem otb) {
         this.odoRecalibrate = odoRecalibrate;
-        m_controller = new HolonomicDriveController(new PIDController(.2, 0, 0), new PIDController(.4, 0, 0),
+
+        // ! For anyone else who reads this: I know these are concerningly high. It
+        // ! works, so do not remove without testing. Signed, Ben K.
+        m_controller = new HolonomicDriveController(new PIDController(.8, 0.16, 0.08),
+                new PIDController(.8, 0.16, 0.08),
                 new ProfiledPIDController(.2, 0, 0, new TrapezoidProfile.Constraints(3 * Math.PI, Math.PI)));
+
         this.swerve = swerve;
-        String trajectoryJSON = "output/StraightLine.wpilib.json";
+        this.otb = otb;
+        String trajectoryJSON = "output/Agressive_Circle_Test.wpilib.json";
 
         trajectory = new Trajectory();
         try {
             Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
             trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
             initialPose = trajectory.getInitialPose();
-            System.out.println(initialPose);
         } catch (IOException ex) {
             DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
         }
@@ -73,13 +80,22 @@ public class AutoCommand extends CommandBase {
                 initialPose.plus(new Transform2d(new Pose2d(), swerve.getController().odo.getCurrentPose().toPose2d())),
                 desiredState, new Rotation2d());
         if (Debug.odometryDebug) {
-            System.out.println("desiredState: " + desiredState.poseMeters);
+            System.out.println("desiredState: " + new Pose2D(desiredState.poseMeters.getX() - initialPose.getX(),
+                    desiredState.poseMeters.getY() - initialPose.getY(), 0));
             System.out.println("currentState: " + swerve.getController().odo.getCurrentPose());
         }
         swerve.drive(new Pose2D(targetChassisSpeeds.vxMetersPerSecond, targetChassisSpeeds.vyMetersPerSecond,
                 targetChassisSpeeds.omegaRadiansPerSecond), false);
+
+        Pose2D currentPose = swerve.getController().odo.getCurrentPose();
+        otb.start();
     }
 
+    @Override
+    public void end(boolean interrupted) {
+        swerve.drive(new Pose2D(0,0,0), true);
+        otb.stop();
+    }
     public void zero() {
 
     }
