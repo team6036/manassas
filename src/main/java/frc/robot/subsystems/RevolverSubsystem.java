@@ -10,7 +10,7 @@ public class RevolverSubsystem extends SubsystemBase {
     CANSparkMax revolver;
 
     public RevolverSubsystem() {
-        revolver = new CANSparkMax(14, MotorType.kBrushless);
+        revolver = new CANSparkMax(19, MotorType.kBrushless);
     }
 
     /**

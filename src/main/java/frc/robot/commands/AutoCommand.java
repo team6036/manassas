@@ -49,15 +49,15 @@ public class AutoCommand extends CommandBase {
 
         this.swerve = swerve;
         this.otb = otb;
-        String trajectoryJSON = "output/Agressive_Circle_Test.wpilib.json";
+        PathString pathString = PathString.BARREL_RACING;
 
         trajectory = new Trajectory();
         try {
-            Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+            Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(pathString.toString());
             trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
             initialPose = trajectory.getInitialPose();
         } catch (IOException ex) {
-            DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+            DriverStation.reportError("Unable to open trajectory: " + pathString.toString(), ex.getStackTrace());
         }
     }
 
@@ -93,14 +93,37 @@ public class AutoCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        swerve.drive(new Pose2D(0,0,0), true);
+        swerve.drive(new Pose2D(0, 0, 0), true);
         otb.stop();
     }
+
     public void zero() {
 
     }
 
     public void reset() {
         initialize();
+    }
+
+    private enum PathString {
+        AGRESSIVE_BARREL_RACING("output/Agressive_Barrel_Racing.wpilib.json"),
+        AGRESSIVE_BOUNCEBACK("output/Agressive_Bounceback.wpilib.json"),
+        AGRESSIVE_SLALOM("output/Agressive_Slalom.wpilib.json"),
+        AGRESSIVE_GALACTIC_SEARCH_A("output/Agressive_Galactic_Search_A.wpilib.json"),
+        BARREL_RACING("output/Barrel_Racing.wpilib.json"),
+        AGRESSIVE_CIRCLE_TEST("output/Agressive_Circle_Test.wpilib.json"),
+        SQUARETEST("output/SquareTest.Path.wpilib.json"), TEST("output/Test.wpilib.json"),
+        STRAIGHTLINE("output/StraightLine.wpilib.json"), FIRST("output/First.wpilib.json");
+
+        private final String text;
+
+        PathString(final String text) {
+            this.text = text;
+        }
+
+        @Override
+        public String toString() {
+            return text;
+        }
     }
 }

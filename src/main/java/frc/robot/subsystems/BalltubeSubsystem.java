@@ -13,7 +13,6 @@ public class BalltubeSubsystem extends SubsystemBase {
 
     public BalltubeSubsystem() {
         balltube = new TalonFX(15);
-
         pusher = new Servo(9);
     }
 

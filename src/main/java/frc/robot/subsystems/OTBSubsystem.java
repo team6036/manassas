@@ -10,7 +10,7 @@ public class OTBSubsystem extends SubsystemBase {
     double power = 0.3;
 
     public OTBSubsystem() {
-        OTB_Motor = new CANSparkMax(16, MotorType.kBrushless);
+        OTB_Motor = new CANSparkMax(21, MotorType.kBrushless);
     }
 
     @Override
@@ -24,12 +24,10 @@ public class OTBSubsystem extends SubsystemBase {
      * @param power power between [-1,1]
      */
     public void start() {
-        System.out.println("starting");
         OTB_Motor.set(power);
     }
 
     public void stop(){
-        System.out.println("stopping");
         OTB_Motor.set(0);
     }
 

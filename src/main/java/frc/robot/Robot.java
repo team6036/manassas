@@ -1,6 +1,15 @@
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -16,6 +25,19 @@ public class Robot extends TimedRobot {
     private RobotContainer m_robotContainer;
     private static Command m_autoCommand;
 
+    // CANSparkMax hoodMotor = new CANSparkMax(23, MotorType.kBrushless);
+    // CANSparkMax bottomMotor = new CANSparkMax(14, MotorType.kBrushless);
+    // CANSparkMax bottomFollower = new CANSparkMax(22, MotorType.kBrushless);
+    // CANSparkMax topMotor = new CANSparkMax(17, MotorType.kBrushless);
+    // CANSparkMax turretMotor = new CANSparkMax(18, MotorType.kBrushless);
+
+    // CANSparkMax revolver = new CANSparkMax(19, MotorType.kBrushless);
+    // TalonFX balltube = new TalonFX(15);
+    // Servo pusher = new Servo(9);
+
+
+    XboxController xbox;
+
     /**
      * This function is run when the robot is first started up and should be used
      * for any initialization code.
@@ -26,6 +48,9 @@ public class Robot extends TimedRobot {
         // and put our
         // autonomous chooser on the dashboard.
         m_robotContainer = new RobotContainer();
+        // bottomFollower.follow(bottomMotor, true);
+
+        // xbox = new XboxController(0);
 
     }
 
@@ -48,6 +73,7 @@ public class Robot extends TimedRobot {
         // robot's periodic
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
+        
 
 
         // this math is for both cameras working
@@ -98,8 +124,13 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().cancelAll();
         m_teleopCommands = m_robotContainer.getTeleopCommands();
         for (Command c : m_teleopCommands) {
-            c.schedule();
+            c.schedule(); 
         }
+
+        // SmartDashboard.putNumber("topMotor", 0);
+        // SmartDashboard.putNumber("bottomMotor", 0);
+        // SmartDashboard.putNumber("turretMotor", 0);
+        // SmartDashboard.putNumber("hoodMotor", 0);
     }
 
     /**
@@ -107,6 +138,40 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
+        // SmartDashboard.putNumber("POV", xbox.getPOV());
+        // if(xbox.getPOV() == 0){
+        //     hoodMotor.set(SmartDashboard.getNumber("hoodMotor", 0));
+        // }else if(xbox.getPOV() == 180){
+        //     hoodMotor.set(-SmartDashboard.getNumber("hoodMotor", 0));
+        // }else{
+        //     hoodMotor.set(0);
+        // }
+
+        // if(xbox.getTriggerAxis(Hand.kLeft) > 0.2){
+        //     turretMotor.set(SmartDashboard.getNumber("turretMotor", 0));
+        // }else if(xbox.getTriggerAxis(Hand.kRight) > 0.2){
+        //     turretMotor.set(SmartDashboard.getNumber("turretMotor", 0));
+        // }else{
+        //     turretMotor.set(0);
+        // }
+
+        // if(xbox.getBumper(Hand.kLeft)){
+        //     topMotor.set(SmartDashboard.getNumber("topMotor", 0));
+        //     bottomMotor.set(SmartDashboard.getNumber("bottomMotor", 0));
+        //     // revolver.set(0.07);SmartDashboard
+        //     // balltube.set(ControlMode.PercentOutput, -0.8);
+
+        //     // pusher.set(0.35);
+
+            
+        // }else{
+        //     topMotor.set(0);
+        //     bottomMotor.set(0);
+        //     pusher.set(0.8);
+        //     revolver.set(0);
+        //     balltube.set(ControlMode.PercentOutput, 0);
+
+        // }
 
     }
 
