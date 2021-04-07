@@ -21,4 +21,12 @@ public class RevolverSubsystem extends SubsystemBase {
         revolver.set(power);
     }
 
+    public void start(){
+        revolver.set(0.07);
+    }
+
+    public void stop(){
+        revolver.set(0);
+    }
+
 }

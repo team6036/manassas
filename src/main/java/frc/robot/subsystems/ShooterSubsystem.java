@@ -10,14 +10,17 @@ public class ShooterSubsystem extends SubsystemBase {
     CANSparkMax bottomMotor;
     CANSparkMax bottomFollower;
     CANSparkMax topMotor;
-    double topPower = 0;
+    double topPower = 0.5;
     double bottomPower = 0.5;
 
     public ShooterSubsystem() {
         bottomMotor = new CANSparkMax(14, MotorType.kBrushless);
-        bottomFollower = new CANSparkMax(16, MotorType.kBrushless);
+        bottomFollower = new CANSparkMax(22, MotorType.kBrushless);
         bottomFollower.follow(bottomMotor);
         topMotor = new CANSparkMax(17, MotorType.kBrushless);
+
+        SmartDashboard.putNumber("topPower", topPower);
+        SmartDashboard.putNumber("bottomPower", bottomPower);
     }
 
     public void start() {
@@ -32,7 +35,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        topPower = SmartDashboard.getNumber("Top Flywheel Power", 0);
+        topPower = SmartDashboard.getNumber("topPower", 0);
+        bottomPower = SmartDashboard.getNumber("bottomPower", 0);
     }
 
 }
