@@ -89,6 +89,14 @@ public class Pose2D extends Vector2D {
         return new Pose2D(getVector2D().rotate(radiansToRotate), ang);
     }
 
+    public Vector2D getRelative(Vector2D globalVec){
+        return globalVec.subtract(this).rotate(-this.ang);
+    }
+
+    public Pose2D getRelative(Pose2D globalPose){
+        return globalPose.subtract(this).rotateAll(-this.ang);
+    }
+
     @Override
     public String toString() {
         return "(" + Util.roundHundreths(x) + ", " + Util.roundHundreths(y) + ", " + Util.roundHundreths(ang) + ")";

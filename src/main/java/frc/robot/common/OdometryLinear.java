@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import org.ejml.simple.*;
 
 public class OdometryLinear {
-    private Pose2D robotPose = new Pose2D(); // note that because we are assuming that the x and y components of the
+    public Pose2D robotPose = new Pose2D(); // note that because we are assuming that the x and y components of the
                                              // pose are accurate, while the angle is not (partially due to use of
                                              // .exp()), which is instead supplied by the gyroscope
     private Gyroscope gyro;

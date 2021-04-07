@@ -7,6 +7,8 @@ import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 import frc.robot.common.OdometryLinear.WheelData;
+import frc.robot.common.Vector2D.Type;
+
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 
 public class SwerveController {
@@ -60,6 +62,37 @@ public class SwerveController {
             wheelSteps.add(new WheelData(avgAngle, distStep)); // odo
         }
         odo.update(wheelSteps);
+    }
+
+    public void nyoom(Vector2D robotSpeeds){
+        nyoom(new Pose2D(robotSpeeds, 0));
+    }
+
+    public void nyoomToPoint(Vector2D endpointGlobal, double speed){
+        Vector2D endpointRel = odo.robotPose.getRelative(endpointGlobal);
+        nyoom(new Vector2D(speed, endpointRel.getAngle(), Type.POLAR));
+    }
+
+    public void nyoomAboutPoint(Vector2D centerGlobal, double speed, boolean rotate){
+        Vector2D centerRel = odo.robotPose.getRelative(centerGlobal);
+        // Printouts.put("centerGlobal", centerGlobal);
+        // Printouts.put("centerRel", centerRel);
+        double angVel = speed / centerRel.getMagnitude();
+
+        if(rotate){
+            nyoom(new Pose2D(centerRel.scalarMult(-angVel).rotate90(), angVel));
+        }else{
+            nyoom(new Pose2D(centerRel.scalarMult(-angVel).rotate90(), 0));
+        }
+    }
+
+    public void nyoomToPointAndSpin(Vector2D endpointGlobal, double angVel, double speed){
+        Vector2D endpointRel = odo.robotPose.getRelative(endpointGlobal);
+        nyoom(new Pose2D(new Vector2D(speed, endpointRel.getAngle(), Type.POLAR), angVel));
+    }
+
+    public void stop(){
+        nyoom(new Pose2D());
     }
 
     /**

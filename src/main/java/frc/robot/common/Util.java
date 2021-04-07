@@ -414,4 +414,8 @@ public class Util {
     return angle;
   }
 
+  public static boolean between(double value, double lower, double upper){
+    return value >= lower && value <=upper;
+  }
+
 }
