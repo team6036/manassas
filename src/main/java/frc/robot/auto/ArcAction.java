@@ -1,6 +1,7 @@
 package frc.robot.auto;
 
 import frc.robot.common.Vector2D;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.common.Pose2D;
 import frc.robot.common.SwerveController;
 
@@ -31,10 +32,7 @@ public class ArcAction extends AbstractAction{
     }
 
     @Override
-    public void runAction(SwerveController swerve, Pose2D init) {
-
-        center = init.getRelative(center);
-
+    public void runAction(SwerveController swerve) {
 
         if(!rotate){
             double currAngle = swerve.odo.robotPose.subtract(center).getAngle();
@@ -54,6 +52,8 @@ public class ArcAction extends AbstractAction{
             if(startAngle == null){
                 startAngle = swerve.getCurrentAngle();
             }
+
+            SmartDashboard.putNumber("curretangle-start", (swerve.getCurrentAngle() - startAngle) );
 
 
 

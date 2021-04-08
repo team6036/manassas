@@ -5,5 +5,5 @@ import frc.robot.common.SwerveController;
 
 public abstract class AbstractAction {
     public boolean done = false;
-    public abstract void runAction(SwerveController swerve, Pose2D init);
+    public abstract void runAction(SwerveController swerve);
 }

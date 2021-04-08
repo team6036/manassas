@@ -136,22 +136,33 @@ public class Robot extends TimedRobot {
         // );
 
         // init (-3.5, 0, 0): 9.5s
+        // AutoSequence barrel = new AutoSequence(
+        //     swerve,
+        //     new LineAction(new Vector2D(-0.8 +3.5, -0, Type.CARTESIAN), speed, 0.2),
+        //     new ArcAction(new Vector2D(-0.8 +3.5, -0.8, Type.CARTESIAN), speed, -1.8*Math.PI),
+        //     new LineAction(new Vector2D(1.7 +3.5, 0.3, Type.CARTESIAN), speed, 0.2),
+        //     new ArcAction(new Vector2D(1.5 +3.5, 0.8, Type.CARTESIAN), speed, 1.5*Math.PI),
+        //     new LineAction(new Vector2D(2.5 +3.5, -1.1, Type.CARTESIAN), speed, 0.2),
+        //     new ArcAction(new Vector2D(3 +3.5, -0.8, Type.CARTESIAN), speed, 1.15*Math.PI),
+        //     new LineAction(new Vector2D(-3.5 +3.5, 0, Type.CARTESIAN), speed, 0.2)
+        // );
+
         AutoSequence barrel = new AutoSequence(
             swerve,
-            new Pose2D(-3.5, 0, 0),
-            new LineAction(new Vector2D(-0.8, -0.3, Type.CARTESIAN), speed, 0.2),
-            new ArcAction(new Vector2D(-0.8, -0.8, Type.CARTESIAN), speed, -1.8*Math.PI),
-            new LineAction(new Vector2D(1.7, 0.3, Type.CARTESIAN), speed, 0.2),
-            new ArcAction(new Vector2D(1.5, 0.8, Type.CARTESIAN), speed, 1.5*Math.PI),
-            new LineAction(new Vector2D(2.5, -1.1, Type.CARTESIAN), speed, 0.2),
-            new ArcAction(new Vector2D(3, -0.8, Type.CARTESIAN), speed, 1.15*Math.PI),
-            new LineAction(new Vector2D(-3.5, 0, Type.CARTESIAN), speed, 0.2)
+            new LineAction(new Vector2D(4.5, -0, Type.CARTESIAN), speed, 0.2),
+            new LineAction(new Vector2D(4.5, -1, Type.CARTESIAN), speed, 0.2),
+            new LineAction(new Vector2D(2, -2, Type.CARTESIAN), speed, 0.2),
+            new LineAction(new Vector2D(5, 2, Type.CARTESIAN), speed, 0.2),
+            new LineAction(new Vector2D(7, 2, Type.CARTESIAN), speed, 0.2),
+            new LineAction(new Vector2D(7, 0, Type.CARTESIAN), speed, 0.2),
+            new LineAction(new Vector2D(2, -2, Type.CARTESIAN), speed, 0.2)
+
+            
         );
 
         // init (-3.4, -1.3, 0): 7.6s
         AutoSequence slalom = new AutoSequence(
             swerve, 
-            new Pose2D(-3.4, -1.3, 0),
             new ArcAction(new Vector2D(-3, -0.8, Type.CARTESIAN), speed, Math.toRadians(30)),
             new LineAction(new Vector2D(-1.5, 0, Type.CARTESIAN), speed, 0.2),
             new LineAction(new Vector2D(1.5, 0, Type.CARTESIAN), speed, 0.2),
@@ -165,7 +176,6 @@ public class Robot extends TimedRobot {
         // init (-3.4, 0, 0): 8.2s
         AutoSequence bounce = new AutoSequence(
             swerve, 
-            new Pose2D(-3.4, 0, 0),
             new ArcAction(new Vector2D(-3.7, 1.5, Type.CARTESIAN), speed, Math.toRadians(70)),
             new LineAction(new Vector2D(-2, 0, Type.CARTESIAN), speed, 0.2),
             new ArcAction(new Vector2D(1, 0.6, Type.CARTESIAN), speed, Math.toRadians(20)),
@@ -186,6 +196,7 @@ public class Robot extends TimedRobot {
     public void autonomousPeriodic() {
         auto.runSequence();
         SmartDashboard.putNumber("actionIndex", auto.actionIndex);
+        SmartDashboard.putString("action", auto.action.toString());
     }
 
 
@@ -254,7 +265,7 @@ public class Robot extends TimedRobot {
         );
 
         if(stickL.getTrigger()){
-            robotSpeeds = robotSpeeds.scalarMult(4);
+            robotSpeeds = robotSpeeds.scalarMult(5);
         }else{
             robotSpeeds = robotSpeeds.scalarMult(2);
         }

@@ -15,7 +15,7 @@ public class AutoSequence {
 
     public Pose2D init;
     
-    public AutoSequence(SwerveController swerve, Pose2D init, AbstractAction... actions_arr){
+    public AutoSequence(SwerveController swerve, AbstractAction... actions_arr){
         this.swerve = swerve;
 
         //convert array into arraylist
@@ -43,7 +43,7 @@ public class AutoSequence {
 
         action = actions.get(actionIndex);
         if(!action.done){
-            action.runAction(swerve, init);
+            action.runAction(swerve);
         }else{
             actionIndex++;
         }

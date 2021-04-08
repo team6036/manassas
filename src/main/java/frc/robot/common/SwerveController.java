@@ -80,9 +80,9 @@ public class SwerveController {
         double angVel = speed / centerRel.getMagnitude();
 
         if(rotate){
-            nyoom(new Pose2D(centerRel.scalarMult(-angVel).rotate90(), angVel));
+            nyoom(new Pose2D(centerRel.scalarMult(-angVel).rotate90(), -angVel), false);
         }else{
-            nyoom(new Pose2D(centerRel.scalarMult(-angVel).rotate90(), 0));
+            nyoom(new Pose2D(centerRel.scalarMult(-angVel).rotate90(), 0), false);
         }
     }
 

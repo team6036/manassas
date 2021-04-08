@@ -27,9 +27,7 @@ public class LineAction extends AbstractAction{
     }
 
     @Override
-    public void runAction(SwerveController swerve, Pose2D init) {
-        endpoint = init.getRelative(endpoint);
-        
+    public void runAction(SwerveController swerve) {        
         if(swerve.odo.robotPose.dist(endpoint) > toleranceRadius){
             if(angVel == 0){
                 swerve.nyoomToPoint(endpoint, speed);
