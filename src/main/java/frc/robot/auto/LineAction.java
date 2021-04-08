@@ -1,6 +1,7 @@
 package frc.robot.auto;
 
 import frc.robot.common.Vector2D;
+import frc.robot.common.Pose2D;
 import frc.robot.common.SwerveController;
 
 public class LineAction extends AbstractAction{
@@ -26,7 +27,9 @@ public class LineAction extends AbstractAction{
     }
 
     @Override
-    public void runAction(SwerveController swerve) {
+    public void runAction(SwerveController swerve, Pose2D init) {
+        endpoint = init.getRelative(endpoint);
+        
         if(swerve.odo.robotPose.dist(endpoint) > toleranceRadius){
             if(angVel == 0){
                 swerve.nyoomToPoint(endpoint, speed);

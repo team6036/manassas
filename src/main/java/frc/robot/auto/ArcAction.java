@@ -1,6 +1,7 @@
 package frc.robot.auto;
 
 import frc.robot.common.Vector2D;
+import frc.robot.common.Pose2D;
 import frc.robot.common.SwerveController;
 
 public class ArcAction extends AbstractAction{
@@ -30,7 +31,9 @@ public class ArcAction extends AbstractAction{
     }
 
     @Override
-    public void runAction(SwerveController swerve) {
+    public void runAction(SwerveController swerve, Pose2D init) {
+
+        center = init.getRelative(center);
 
 
         if(!rotate){

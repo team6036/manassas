@@ -20,6 +20,7 @@ import frc.robot.Constants.SwerveConstants.FL;
 import frc.robot.Constants.SwerveConstants.BL;
 import frc.robot.common.Gyroscope;
 import frc.robot.common.Pose2D;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
 import frc.robot.common.SwerveController;
 import frc.robot.common.Util;
@@ -31,6 +32,8 @@ import frc.robot.common.Vector2D.Type;
 public class Robot extends TimedRobot {
 
     XboxController xbox = new XboxController(0);
+    Joystick stickL = new Joystick(1);
+    Joystick stickR = new Joystick(2);
 
     CANSparkMax bottomMotor;
     CANSparkMax bottomFollower;
@@ -89,7 +92,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("bottomMotorPower", -0.8);
         SmartDashboard.putNumber("revolverPower", 0.07);
         SmartDashboard.putNumber("turretPower", 0.1);
-        SmartDashboard.putNumber("balltubePower", 0.8);
+        SmartDashboard.putNumber("balltubePower", -0.8);
         SmartDashboard.putNumber("otbPower", 0.5);
 
         SmartDashboard.putNumber("autoSpeed", 1);
@@ -107,34 +110,35 @@ public class Robot extends TimedRobot {
         //TODO: make the actions relative, or make odo global
 
         // init (-4.15, 1, -0.5): 4.6s
-        AutoSequence searchA = new AutoSequence(
-            swerve, 
-            new LineAction(new Vector2D(-0.8, -0.8, Type.CARTESIAN), speed, 0.2),
-            new LineAction(new Vector2D(-0.5, 1.5, Type.CARTESIAN), speed, 0.2, 2.3),
-            new LineAction(new Vector2D(4.5, 1.5, Type.CARTESIAN), speed, 0.2)
-        );
+        // AutoSequence searchA = new AutoSequence(
+        //     swerve, 
+        //     new LineAction(new Vector2D(-0.8, -0.8, Type.CARTESIAN), speed, 0.2),
+        //     new LineAction(new Vector2D(-0.5, 1.5, Type.CARTESIAN), speed, 0.2, 2.3),
+        //     new LineAction(new Vector2D(4.5, 1.5, Type.CARTESIAN), speed, 0.2)
+        // );
 
         // init (-4.15, 0, 0): 4.5s
-        AutoSequence searchAStraight = new AutoSequence(
-            swerve, 
-            new LineAction(new Vector2D(-2, 0, Type.CARTESIAN), speed, 0.2),
-            new LineAction(new Vector2D(-0.8, -1, Type.CARTESIAN), speed, 0.2),
-            new LineAction(new Vector2D(-0.5, 1.3, Type.CARTESIAN), speed, 0.2, 2),
-            new LineAction(new Vector2D(4.5, 1.5, Type.CARTESIAN), speed, 0.2)
-        );
+        // AutoSequence searchAStraight = new AutoSequence(
+        //     swerve, 
+        //     new LineAction(new Vector2D(-2, 0, Type.CARTESIAN), speed, 0.2),
+        //     new LineAction(new Vector2D(-0.8, -1, Type.CARTESIAN), speed, 0.2),
+        //     new LineAction(new Vector2D(-0.5, 1.3, Type.CARTESIAN), speed, 0.2, 2),
+        //     new LineAction(new Vector2D(4.5, 1.5, Type.CARTESIAN), speed, 0.2)
+        // );
 
         // init (-4.15, 0.8, 0): 4.3s
-        AutoSequence searchB = new AutoSequence(
-            swerve, 
-            new LineAction(new Vector2D(-2.2, 0.8, Type.CARTESIAN), speed, 0.2),
-            new LineAction(new Vector2D(-1, -1, Type.CARTESIAN), speed, 0.2),
-            new LineAction(new Vector2D(0.5, 0.8, Type.CARTESIAN), speed, 0.2, 2),
-            new LineAction(new Vector2D(4.5, 0.8, Type.CARTESIAN), speed, 0.2)
-        );
+        // AutoSequence searchB = new AutoSequence(
+        //     swerve, 
+        //     new LineAction(new Vector2D(-2.2, 0.8, Type.CARTESIAN), speed, 0.2),
+        //     new LineAction(new Vector2D(-1, -1, Type.CARTESIAN), speed, 0.2),
+        //     new LineAction(new Vector2D(0.5, 0.8, Type.CARTESIAN), speed, 0.2, 2),
+        //     new LineAction(new Vector2D(4.5, 0.8, Type.CARTESIAN), speed, 0.2)
+        // );
 
         // init (-3.5, 0, 0): 9.5s
         AutoSequence barrel = new AutoSequence(
-            swerve, 
+            swerve,
+            new Pose2D(-3.5, 0, 0),
             new LineAction(new Vector2D(-0.8, -0.3, Type.CARTESIAN), speed, 0.2),
             new ArcAction(new Vector2D(-0.8, -0.8, Type.CARTESIAN), speed, -1.8*Math.PI),
             new LineAction(new Vector2D(1.7, 0.3, Type.CARTESIAN), speed, 0.2),
@@ -147,6 +151,7 @@ public class Robot extends TimedRobot {
         // init (-3.4, -1.3, 0): 7.6s
         AutoSequence slalom = new AutoSequence(
             swerve, 
+            new Pose2D(-3.4, -1.3, 0),
             new ArcAction(new Vector2D(-3, -0.8, Type.CARTESIAN), speed, Math.toRadians(30)),
             new LineAction(new Vector2D(-1.5, 0, Type.CARTESIAN), speed, 0.2),
             new LineAction(new Vector2D(1.5, 0, Type.CARTESIAN), speed, 0.2),
@@ -160,6 +165,7 @@ public class Robot extends TimedRobot {
         // init (-3.4, 0, 0): 8.2s
         AutoSequence bounce = new AutoSequence(
             swerve, 
+            new Pose2D(-3.4, 0, 0),
             new ArcAction(new Vector2D(-3.7, 1.5, Type.CARTESIAN), speed, Math.toRadians(70)),
             new LineAction(new Vector2D(-2, 0, Type.CARTESIAN), speed, 0.2),
             new ArcAction(new Vector2D(1, 0.6, Type.CARTESIAN), speed, Math.toRadians(20)),
@@ -173,21 +179,26 @@ public class Robot extends TimedRobot {
         );
 
 
-        auto = searchA;
+        auto = barrel;
     }
 
     @Override
     public void autonomousPeriodic() {
         auto.runSequence();
+        SmartDashboard.putNumber("actionIndex", auto.actionIndex);
     }
 
 
     @Override
     public void teleopPeriodic() {
-        boolean shoot = xbox.getBumper(Hand.kLeft);
-        boolean intake = xbox.getBumper(Hand.kRight);
-        boolean backwards = xbox.getAButton();
-        boolean reset = xbox.getXButton();
+        boolean shoot = xbox.getBumper(Hand.kRight);
+        boolean prerun = xbox.getTriggerAxis(Hand.kRight) > 0.1;
+
+        boolean intake = xbox.getBumper(Hand.kLeft);
+        boolean allbackwards = xbox.getAButton();
+        boolean reset = stickR.getRawButton(11);
+
+        boolean revBack = xbox.getTriggerAxis(Hand.kLeft) > 0.1;
 
         if(shoot){
             balltube.set(ControlMode.PercentOutput, SmartDashboard.getNumber("balltubePower", 0));
@@ -195,37 +206,66 @@ public class Robot extends TimedRobot {
             bottomMotor.set(SmartDashboard.getNumber("bottomMotorPower", 0));
             topMotor.set(SmartDashboard.getNumber("topMotorPower", 0));
             pusher.set(0.35);
-        }else if(backwards){
+            System.out.println("shoot");
+        }else if(prerun){
+            bottomMotor.set(SmartDashboard.getNumber("bottomMotorPower", 0));
+            topMotor.set(SmartDashboard.getNumber("topMotorPower", 0));
+            System.out.println("prerun");
+        }else if(allbackwards){
             balltube.set(ControlMode.PercentOutput, -SmartDashboard.getNumber("balltubePower", 0));
             revolver.set(-SmartDashboard.getNumber("revolverPower", 0));
             bottomMotor.set(-SmartDashboard.getNumber("bottomMotorPower", 0));
             topMotor.set(-SmartDashboard.getNumber("topMotorPower", 0));
             otb.set(-SmartDashboard.getNumber("otbPower", 0));
             pusher.set(0.8);
+            System.out.println("allbackwards");
+
         }else if(intake){
             otb.set(SmartDashboard.getNumber("otbPower", 0));
             revolver.set(SmartDashboard.getNumber("revolverPower", 0));
+            System.out.println("intake");
+
         }else{
             balltube.set(ControlMode.PercentOutput, 0);
-            revolver.set(0);
+            // revolver.set(0);
             bottomMotor.set(0);
             topMotor.set(0);
             otb.set(0);
             pusher.set(0.8);
+            System.out.println("idle");
+
+        }
+
+        if(revBack){
+            revolver.set(-SmartDashboard.getNumber("revolverPower", 0));
+            System.out.println("revBack");
         }
 
         if(reset){
             swerve.zeroWheels();
             swerve.recalibrateOdometry();
+            System.out.println("reset");
         }
 
         Pose2D robotSpeeds = new Pose2D(
-            xbox.getX(Hand.kLeft),
-            xbox.getY(Hand.kLeft),
-            xbox.getX(Hand.kRight)
-        )
-        .scalarMult(2);
+            -stickL.getY(),
+            -stickL.getX(),
+            stickR.getX() * 2
+        );
 
+        if(stickL.getTrigger()){
+            robotSpeeds = robotSpeeds.scalarMult(4);
+        }else{
+            robotSpeeds = robotSpeeds.scalarMult(2);
+        }
+
+        if(robotSpeeds.getMagnitude() < 0.1){
+            robotSpeeds.x = 0;
+            robotSpeeds.y = 0;
+        }
+        if(Math.abs(robotSpeeds.ang) < 0.1){
+            robotSpeeds.ang = 0;
+        }
         swerve.nyoom(robotSpeeds, true);
     }
 

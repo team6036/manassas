@@ -2,6 +2,7 @@ package frc.robot.auto;
 
 import java.util.ArrayList;
 
+import frc.robot.common.Pose2D;
 import frc.robot.common.SwerveController;
 
 public class AutoSequence {
@@ -11,8 +12,10 @@ public class AutoSequence {
     public int actionIndex;
     public AbstractAction action;
     public boolean done;
+
+    public Pose2D init;
     
-    public AutoSequence(SwerveController swerve, AbstractAction... actions_arr){
+    public AutoSequence(SwerveController swerve, Pose2D init, AbstractAction... actions_arr){
         this.swerve = swerve;
 
         //convert array into arraylist
@@ -22,6 +25,8 @@ public class AutoSequence {
         }
 
         actionIndex = 0;
+
+        this.init = init;
     }
 
     public void addAction(AbstractAction action_new){
@@ -38,7 +43,7 @@ public class AutoSequence {
 
         action = actions.get(actionIndex);
         if(!action.done){
-            action.runAction(swerve);
+            action.runAction(swerve, init);
         }else{
             actionIndex++;
         }

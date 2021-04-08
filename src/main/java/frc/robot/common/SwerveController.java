@@ -65,7 +65,7 @@ public class SwerveController {
     }
 
     public void nyoom(Vector2D robotSpeeds){
-        nyoom(new Pose2D(robotSpeeds, 0));
+        nyoom(new Pose2D(robotSpeeds, 0), false);
     }
 
     public void nyoomToPoint(Vector2D endpointGlobal, double speed){
@@ -206,7 +206,7 @@ public class SwerveController {
             targetAngle = targetSpeedVector.getAngle();
             targetDriveSpeed = targetSpeedVector.getMagnitude();
 
-            if (Math.abs(targetDriveSpeed) < -0.1) { // was 0.5
+            if (Math.abs(targetDriveSpeed) < 0.3) { // was 0.5
                 targetAngle = closest180(currentAngle, targetAngle);
                 if (reversed)
                     targetDriveSpeed *= -1;
