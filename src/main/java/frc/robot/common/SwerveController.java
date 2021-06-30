@@ -1,13 +1,14 @@
 package frc.robot.common;
 
 import java.util.ArrayList;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 import frc.robot.common.OdometryLinear.WheelData;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
+import frc.robot.common.SwerveConstants.DrivePIDS;
+import frc.robot.common.SwerveConstants.TurnPIDS;
 
 public class SwerveController {
     private static double WHEEL_RADIUS, DRIVE_RATIO;
@@ -129,7 +130,6 @@ public class SwerveController {
          * @param name         Name for logging purposes
          */
         public Module(int turnMotorID, int driveMotorID, int cancoderID, Pose2D placement, String name) {
-            // TODO Consider moving this to constants?
             this.name = name;
             turnMotor = new WPI_TalonFX(turnMotorID);
             driveMotor = new WPI_TalonFX(driveMotorID);
@@ -144,17 +144,17 @@ public class SwerveController {
             turnMotor.configRemoteFeedbackFilter(cancoder, 0);
             turnMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
 
-            turnMotor.config_kF(0, 0.002, 0);
-            turnMotor.config_kP(0, 0.50, 0);
-            turnMotor.config_kI(0, 0.0005, 0);
-            turnMotor.config_kD(0, 0, 0);
+            turnMotor.config_kF(0, TurnPIDS.kF, 0);
+            turnMotor.config_kP(0, TurnPIDS.kP, 0);
+            turnMotor.config_kI(0, TurnPIDS.kI, 0);
+            turnMotor.config_kD(0, TurnPIDS.kD, 0);
 
             driveMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
 
-            driveMotor.config_kF(0, 1023.0 / 20660.0, 0);
-            driveMotor.config_kP(0, 0.1, 0);
-            driveMotor.config_kI(0, 0, 0);
-            driveMotor.config_kD(0, 0, 0);
+            driveMotor.config_kF(0, DrivePIDS.kF, 0);
+            driveMotor.config_kP(0, DrivePIDS.kP, 0);
+            driveMotor.config_kI(0, DrivePIDS.kI, 0);
+            driveMotor.config_kD(0, DrivePIDS.kD, 0);
         }
 
         public void move(Pose2D robotSpeeds, boolean turn, boolean drive) {
@@ -173,7 +173,7 @@ public class SwerveController {
             targetAngle = targetSpeedVector.getAngle();
             targetDriveSpeed = targetSpeedVector.getMagnitude();
 
-            if (Math.abs(targetDriveSpeed) < -0.1) { // was 0.5
+            if (Math.abs(targetDriveSpeed) < SwerveConstants.angleOptimizationThreshold) { // was 0.5
                 targetAngle = closest180(currentAngle, targetAngle);
                 if (reversed)
                     targetDriveSpeed *= -1;
