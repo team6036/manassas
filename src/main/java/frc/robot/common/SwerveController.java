@@ -14,7 +14,8 @@ import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 public class SwerveController {
     private static double WHEEL_RADIUS, DRIVE_RATIO;
     private final Gyroscope gyroscope;
-    public final OdometryLinear odo;
+    // public final OdometryLinear odo;
+    public final OdometryAvg odo;
     private Pose2D velPose = new Pose2D();
     public Module[] modules;
 
@@ -32,7 +33,7 @@ public class SwerveController {
             placements[moduleIndex] = modules[moduleIndex].placement;
         }
         this.gyroscope = gyroscope;
-        odo = new OdometryLinear(gyroscope, placements);
+        odo = new OdometryAvg(gyroscope, placements);
         this.modules = modules;
     }
 
@@ -177,9 +178,9 @@ public class SwerveController {
             turnMotor.configRemoteFeedbackFilter(cancoder, 0);
             turnMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
 
-            turnMotor.config_kF(0, 0.002, 0);
-            turnMotor.config_kP(0, 0.50, 0);
-            turnMotor.config_kI(0, 0.0005, 0);
+            turnMotor.config_kF(0, 0.00, 0);
+            turnMotor.config_kP(0, 0.20, 0);
+            turnMotor.config_kI(0, 0.000, 0);
             turnMotor.config_kD(0, 0, 0);
 
             driveMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
