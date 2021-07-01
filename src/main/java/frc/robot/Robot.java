@@ -94,9 +94,9 @@ public class Robot extends TimedRobot {
         }
 
         Pose2D robotSpeeds = new Pose2D(
-            -stickL.getY(),
-            -stickL.getX(),
-            stickR.getX() * 2
+            deadband(-stickL.getY(), 0.1),
+            deadband(-stickL.getX(), 0.1),
+            deadband(stickR.getX() * 2, 0.1)
         );
 
         if(stickL.getTrigger()){
@@ -105,14 +105,27 @@ public class Robot extends TimedRobot {
             robotSpeeds = robotSpeeds.scalarMult(2);
         }
 
-        if(robotSpeeds.getMagnitude() < 0.1){
-            robotSpeeds.x = 0;
-            robotSpeeds.y = 0;
+        SmartDashboard.putString("robotSpeeds", robotSpeeds.toString());
+
+        if(robotSpeeds.getMagnitude() == 0 && robotSpeeds.ang == 0){
+            swerve.stop();
+        }else{
+            swerve.nyoom(robotSpeeds, true);
         }
-        if(Math.abs(robotSpeeds.ang) < 0.1){
-            robotSpeeds.ang = 0; 
+
+        for(Module module : swerve.modules){
+            SmartDashboard.putNumber(module.getName(), module.getCurrentSpeed());
         }
-        swerve.nyoom(robotSpeeds, true);
+    }
+
+    public double deadband(double input, double threshold){
+        if(Math.abs(input) < threshold){
+            return 0;
+        }else if(input > threshold){
+            return (input - threshold) / (1 - threshold);
+        }else {
+            return (input + threshold) / (1 - threshold);
+        }
     }
 
     

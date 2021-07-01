@@ -54,7 +54,7 @@ public class OdometryLinear {
 
         Pose2D robotStep = new Pose2D(x.get(0), x.get(1), x.get(2)).rotateVec(robotPose.ang);
 
-        robotPose = robotPose.exp(robotStep);
+        robotPose = robotPose.add(robotStep);
         robotPose.ang = gyro.getAngle();
     }
 

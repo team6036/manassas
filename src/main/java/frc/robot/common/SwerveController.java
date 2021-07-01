@@ -1,8 +1,10 @@
 package frc.robot.common;
 
 import java.util.ArrayList;
+import java.util.ResourceBundle.Control;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
@@ -15,7 +17,7 @@ public class SwerveController {
     private static double WHEEL_RADIUS, DRIVE_RATIO;
     private final Gyroscope gyroscope;
     // public final OdometryLinear odo;
-    public final OdometryAvg odo;
+    public final OdometryLinear odo;
     private Pose2D velPose = new Pose2D();
     public Module[] modules;
 
@@ -33,7 +35,7 @@ public class SwerveController {
             placements[moduleIndex] = modules[moduleIndex].placement;
         }
         this.gyroscope = gyroscope;
-        odo = new OdometryAvg(gyroscope, placements);
+        odo = new OdometryLinear(gyroscope, placements);
         this.modules = modules;
     }
 
@@ -93,7 +95,10 @@ public class SwerveController {
     }
 
     public void stop(){
-        nyoom(new Pose2D());
+        for(Module module : modules){
+            module.turnMotor.set(ControlMode.PercentOutput, 0);
+            module.driveMotor.set(ControlMode.PercentOutput, 0);
+        }
     }
 
     /**
@@ -177,6 +182,7 @@ public class SwerveController {
 
             turnMotor.configRemoteFeedbackFilter(cancoder, 0);
             turnMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
+            turnMotor.setNeutralMode(NeutralMode.Brake);
 
             turnMotor.config_kF(0, 0.00, 0);
             turnMotor.config_kP(0, 0.20, 0);
@@ -184,9 +190,10 @@ public class SwerveController {
             turnMotor.config_kD(0, 0, 0);
 
             driveMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
+            driveMotor.setNeutralMode(NeutralMode.Brake);
 
-            driveMotor.config_kF(0, 1023.0 / 20660.0, 0);
-            driveMotor.config_kP(0, 0.1, 0);
+            driveMotor.config_kF(0, 0.05, 0);
+            driveMotor.config_kP(0, 0.0, 0);
             driveMotor.config_kI(0, 0, 0);
             driveMotor.config_kD(0, 0, 0);
         }
@@ -207,11 +214,11 @@ public class SwerveController {
             targetAngle = targetSpeedVector.getAngle();
             targetDriveSpeed = targetSpeedVector.getMagnitude();
 
-            if (Math.abs(targetDriveSpeed) < 0.3) { // was 0.5
-                targetAngle = closest180(currentAngle, targetAngle);
+            if (Math.abs(targetDriveSpeed) < -1) { // was 0.5
+                targetAngle = closest180Alt(currentAngle, targetAngle);
                 if (reversed)
                     targetDriveSpeed *= -1;
-                targetDriveSpeed = 0;
+                // targetDriveSpeed = 0;
             } else {
                 if (reversed) {
                     targetAngle = closest360(currentAngle, targetAngle + Math.PI);
@@ -221,7 +228,11 @@ public class SwerveController {
                 }
             }
 
+            
+
             double targetTurnTick = radToTicks(targetAngle - placement.ang);
+
+            targetDriveSpeed *= Math.cos(currentAngle - targetAngle);
 
             double targetDriveTicksPer100Millis = speedToTicksPer100Millis(targetDriveSpeed);
 
@@ -257,6 +268,14 @@ public class SwerveController {
         private double closest360(double currentAngle, double targetAngle) {
             double diffNormalized = Util.normalizeAngle(currentAngle - targetAngle, Math.PI); // angle error from (-PI,
                                                                                               // PI)
+            return currentAngle - diffNormalized;
+        }
+
+        private double closest180Alt(double currentAngle, double targetAngle) {
+            double diffNormalized = Util.normalizeAngle(currentAngle - targetAngle, Math.PI/2.0); // angle error from (-PI,
+            if(Math.abs(Util.normalizeAngle(targetAngle - (currentAngle - diffNormalized), Math.PI)) > Math.PI/2.0){
+                reversed = true;
+            }
             return currentAngle - diffNormalized;
         }
 
